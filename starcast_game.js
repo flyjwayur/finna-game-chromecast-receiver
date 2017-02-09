@@ -1,9 +1,3 @@
-goog.provide('cast.games.starcast.StarcastGame');
-
-goog.require('cast.games.common.receiver.Game');
-
-
-
 /**
  * Starcast game.
  *
