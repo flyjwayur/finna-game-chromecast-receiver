@@ -477,6 +477,8 @@ cast.games.starcast.StarcastGame.prototype.onGameMessage_ = function(event) {
 cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ =
     function(player, direction) {
 
+  console.log("onPlayerMessage" + direction);
+
   var playerSprite = this.playerMap_[player.playerId];
   if (!playerSprite) {
     throw Error('No player sprite found for player ' + player.playerId);
