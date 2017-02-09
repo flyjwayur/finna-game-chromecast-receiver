@@ -314,7 +314,7 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
     explosion.position.y = 0;
     explosion.visible = false;
     explosion.loop = false;
-    explosion.onComplete = goog.bind(this.hideExplosion_, this, explosion);
+    explosion.onComplete = this.hideExplosion_.bind(this, explosion);
 
     this.container_.addChild(explosion);
     this.explosions_.push(explosion);
