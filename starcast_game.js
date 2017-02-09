@@ -22,7 +22,7 @@ cast.games.starcast.StarcastGame = function(gameManager) {
    * @public {cast.receiver.games.debug.DebugUI}
    */
   this.debugUi = new cast.receiver.games.debug.DebugUI(this.gameManager_);
-  debugUi.open();
+  this.debugUi.open();
 
   /**
    * Debug only. Set to true to allow players to move and fire by themselves.
