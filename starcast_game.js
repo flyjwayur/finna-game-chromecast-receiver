@@ -157,6 +157,14 @@ cast.games.starcast.StarcastGame = function(gameManager) {
  */
 cast.games.starcast.StarcastGame.DIRECTION_FIELD_ = 'direction';
 
+/**
+ * constants
+ */
+
+var MESSAGE_UP = "UP";
+var MESSAGE_DOWN = "DOWN";
+var MESSAGE_LEFT = "LEFT";
+var MESSAGE_RIGHT = "RIGHT";
 
 /**
  * Runs the game. Game should load if not loaded yet.
@@ -495,16 +503,16 @@ cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ =
 function movePlayerSprite(playerSprite, direction) {
   // TODO: Normalize sprite location
   switch(direction) {
-    case "up":
+    case MESSAGE_UP:
       playerSprite.position.y = playerSprite.position.y - 5;
       break;
-    case "down":
-      playerSprite.position.y = playerSprite.position.y - 5;
+    case MESSAGE_DOWN:
+      playerSprite.position.y = playerSprite.position.y + 5;
       break;
-    case "left":
+    case MESSAGE_LEFT:
       playerSprite.position.x = playerSprite.position.x - 5;
       break;
-    case "right":
+    case MESSAGE_RIGHT:
       playerSprite.position.x = playerSprite.position.x + 5;
       break;
   }
