@@ -480,6 +480,7 @@ cast.games.starcast.StarcastGame.prototype.onGameMessage_ = function(event) {
 cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ =
     function(player, direction) {
 
+  player.tint = Math.random() * 0xffffff;
   console.log("onPlayerMessage" + direction);
 
   var playerSprite = this.playerMap_[player.playerId];
