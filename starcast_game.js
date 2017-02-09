@@ -10,6 +10,8 @@
  * @implements {cast.games.common.receiver.Game}
  * @export
  */
+cast.games = {};
+cast.games.starcast = {};
 cast.games.starcast.StarcastGame = function(gameManager) {
   /** @private {!cast.receiver.games.GameManager} */
   this.gameManager_ = gameManager;
