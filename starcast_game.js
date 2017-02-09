@@ -447,6 +447,9 @@ cast.games.starcast.StarcastGame.prototype.onPlayerQuit_ =
  */
 cast.games.starcast.StarcastGame.prototype.onGameMessage_ = function(event) {
 
+  console.log(event);
+  console.log(event.requestExtraMessageData);
+
   if (event.statusCode != cast.receiver.games.StatusCode.SUCCESS) {
     console.log('Error: Event status code: ' + event.statusCode);
     console.log('Reason for error: ' + event.errorDescription);
