@@ -47,27 +47,9 @@ cast.games.starcast.StarcastGame = function(gameManager) {
   /** @private {number} */
   this.MAX_PLAYERS_ = 4;
 
-  /** @private {number} */
-  this.MAX_ENEMIES_ = 5;
-
-  /** @private {number} */
-  this.MAX_PLAYER_BULLETS_ = 20;
-
-  /** @private {number} */
-  this.MAX_EXPLOSIONS_ = 5;
-
-  /** @private {number} */
-  this.MIN_SPEED_ = 10;
-
-  /** @private {number} */
-  this.MAX_SPEED_ = 30;
-
-  /** @private {number} */
-  this.BULLET_SPEED_ = 40;
-
   /** @private {string} */
-  this.MULTIPLE_FIRE_MESSAGES_ERROR_ =
-      'Multiple fire messages on a single frame: ';
+  this.MESSAGES_ERROR_ =
+      'Error message: ';
 
   /** @private {!Array.<!PIXI.Sprite>} All player sprites. */
   this.players_ = [];
@@ -78,29 +60,14 @@ cast.games.starcast.StarcastGame = function(gameManager) {
    */
   this.playerMap_ = {};
 
-  /** @private {!Array.<!PIXI.Sprite>} All enemy sprites. */
-  this.enemies_ = [];
-
-  /*** @private {!Uint32Array} All enemy speeds. */
-  this.enemySpeeds_ = new Uint32Array(this.MAX_ENEMIES_);
-
   /** @private {!Uint32Array} Used for loop iterators in #update */
   this.loopIterator_ = new Uint32Array(2);
-
-  /** @private {!Array.<!PIXI.Sprite>} All player bullets. */
-  this.playerBullets_ = [];
 
   /** @private {PIXI.Sprite} The background. */
   this.backgroundSprite_ = null;
 
-  /** @private {!Array.<!PIXI.Texture>} All explosion textures. */
-  this.explosionTextures_ = [];
-
   /** @private {!Array.<!PIXI.extras.MovieClip>} All explosion movie clips. */
   this.explosions_ = [];
-
-  /** @private {boolean} True if there is already a fire message this frame. */
-  this.fireThisFrame_ = false;
 
   /** @private {function(number)} Pre-bound call to #update. */
   this.boundUpdateFunction_ = this.update_.bind(this);
@@ -122,10 +89,6 @@ cast.games.starcast.StarcastGame = function(gameManager) {
   this.loader_ = new PIXI.loaders.Loader();
   this.loader_.add('assets/background.jpg');
   this.loader_.add('assets/player.png');
-  this.loader_.add('assets/enemy.png');
-  this.loader_.add('assets/explosion.json');
-  this.loader_.add('assets/explosion.png');
-  this.loader_.add('assets/player_bullet.png');
   this.loader_.once('complete', this.onAssetsLoaded_.bind(this));
 
   /** @private {?function()} Callback used with #run. */
@@ -284,50 +247,6 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
     this.players_.push(player);
   }
 
-  for (var i = 0; i < this.MAX_ENEMIES_; i++) {
-    var enemy = PIXI.Sprite.fromImage('assets/enemy.png');
-    enemy.anchor.x = 0.5;
-    enemy.anchor.y = 0.5;
-    enemy.position.x = -(enemy.texture.width +
-            this.DISPLAY_BORDER_BUFFER_WIDTH_);
-    enemy.position.y = 0;
-    this.container_.addChild(enemy);
-
-    this.enemies_.push(enemy);
-    this.enemySpeeds_[i] = 0;
-  }
-
-  for (var i = 0; i < this.MAX_PLAYER_BULLETS_; i++) {
-    var bullet = PIXI.Sprite.fromImage('assets/player_bullet.png');
-    bullet.anchor.x = 0.5;
-    bullet.anchor.y = 0.5;
-    bullet.position.x = 0;
-    bullet.position.y = 0;
-    bullet.visible = false;
-    this.container_.addChild(bullet);
-
-    this.playerBullets_.push(bullet);
-  }
-
-  for (var i = 0; i < 12; i++) {
-    var explosionTexture = PIXI.Texture.fromFrame('explosion' + (i + 1));
-    this.explosionTextures_.push(explosionTexture);
-  }
-
-  for (var i = 0; i < this.MAX_EXPLOSIONS_; i++) {
-    var explosion = new PIXI.extras.MovieClip(this.explosionTextures_);
-    explosion.anchor.x = 0.5;
-    explosion.anchor.y = 0.5;
-    explosion.position.x = 0;
-    explosion.position.y = 0;
-    explosion.visible = false;
-    explosion.loop = false;
-    explosion.onComplete = this.hideExplosion_.bind(this, explosion);
-
-    this.container_.addChild(explosion);
-    this.explosions_.push(explosion);
-  }
-
   this.start_();
 };
 
@@ -344,31 +263,8 @@ cast.games.starcast.StarcastGame.prototype.update_ = function(timestamp) {
 
   requestAnimationFrame(this.boundUpdateFunction_);
 
-  this.fireThisFrame_ = false;
-
-  if (this.randomAiEnabled) {
-    var players = this.gameManager_.getPlayers();
-    for (var i = 0; i < players.length; i++) {
-      var player = players[i];
-      this.onPlayerMessage_(player, Math.random() < 0.5 ? true : false,
-          Math.random() * 1.1);
-    }
-  }
-
-  for (this.loopIterator_[0] = 0; this.loopIterator_[0] < this.MAX_ENEMIES_;
-      this.loopIterator_[0]++) {
-    this.updateEnemy_();
-  }
-
-  for (this.loopIterator_[0] = 0;
-      this.loopIterator_[0] < this.MAX_PLAYER_BULLETS_;
-      this.loopIterator_[0]++) {
-    this.updateBullet_();
-  }
-
   this.renderer_.render(this.container_);
 };
-
 
 /**
  * Handles when a player becomes available to the game manager.
@@ -382,7 +278,6 @@ cast.games.starcast.StarcastGame.prototype.onPlayerAvailable_ =
     console.log('Reason for error: ' + event.errorDescription);
     return;
   }
-
 
   var playerId = /** @type {string} */ (event.playerInfo.playerId);
   // Automatically transition available players to playing state.
@@ -447,7 +342,6 @@ cast.games.starcast.StarcastGame.prototype.onPlayerQuit_ =
   }
 };
 
-
 /**
  * Handles incoming messages.
  * @param {cast.receiver.games.Event} event
@@ -471,9 +365,8 @@ cast.games.starcast.StarcastGame.prototype.onGameMessage_ = function(event) {
     throw Error('No player found for player ID ' + event.playerInfo.playerId);
   }
 
-  var directionField = event.requestExtraMessageData[
-      cast.games.starcast.StarcastGame.DIRECTION_FIELD_];
-  this.onPlayerMessage_(player, directionField ? directionField : "UP");
+  var directionField = event.requestExtraMessageData[cast.games.starcast.StarcastGame.DIRECTION_FIELD_];
+  this.onPlayerMessage_(player, directionField);
 };
 
 
@@ -517,164 +410,3 @@ function movePlayerSprite(playerSprite, direction) {
       break;
   }
 }
-
-/**
- * Updates enemy position. Uses #loopIterator_[0] to select enemy to move.
- * @private
- */
-cast.games.starcast.StarcastGame.prototype.updateEnemy_ = function() {
-  var index = this.loopIterator_[0];
-  var enemy = this.enemies_[index];
-
-  if (enemy.position.x < -(enemy.texture.width)) {
-    enemy.position.x = this.canvasWidth_ + Math.random() * this.canvasWidth_;
-
-    var spriteVerticalRange = this.canvasHeight_ - enemy.texture.height;
-    enemy.position.y = (Math.random() * spriteVerticalRange) +
-            enemy.texture.height / 2;
-
-    this.enemySpeeds_[index] = Math.floor(Math.random() * (this.MAX_SPEED_ -
-        this.MIN_SPEED_ + 1)) + this.MIN_SPEED_;
-  } else {
-    enemy.position.x -= this.enemySpeeds_[index];
-    for (this.loopIterator_[1] = 0; this.loopIterator_[1] < this.MAX_PLAYERS_;
-        this.loopIterator_[1]++) {
-      var player = this.players_[this.loopIterator_[1]];
-
-      if (!player.visible) {
-        continue;
-      }
-
-      if (this.willCollide_(enemy, player)) {
-        this.showExplosion_(enemy);
-        enemy.visible = false;
-        enemy.position.x = -(enemy.texture.width +
-                this.DISPLAY_BORDER_BUFFER_WIDTH_);
-        return;
-      }
-    }
-    enemy.visible = true;
-  }
-};
-
-
-/**
- * Updates bullet position. Uses #loopIterator_[0] to select bullet to move.
- * @private
- */
-cast.games.starcast.StarcastGame.prototype.updateBullet_ = function() {
-  var bullet = this.playerBullets_[this.loopIterator_[0]];
-
-  if (bullet.position.x > this.canvasWidth_) {
-    bullet.visible = false;
-  }
-
-  if (!bullet.visible) {
-    return;
-  }
-
-  bullet.position.x += this.BULLET_SPEED_;
-
-  for (var i = 0; i < this.MAX_ENEMIES_; i++) {
-    var enemy = this.enemies_[i];
-    if (this.willCollide_(bullet, enemy)) {
-      this.showExplosion_(bullet);
-      bullet.visible = false;
-      enemy.visible = false;
-      enemy.position.x = -(enemy.texture.width +
-              this.DISPLAY_BORDER_BUFFER_WIDTH_);
-    }
-  }
-};
-
-
-/**
- * Returns true if sprite1 collides with sprite2.
- * @param {!PIXI.Sprite} sprite1
- * @param {!PIXI.Sprite} sprite2
- * @return {boolean} True if sprite1 collides with sprite2.
- * @private
- */
-cast.games.starcast.StarcastGame.prototype.willCollide_ =
-    function(sprite1, sprite2) {
-  var sprite1HalfWidth = sprite1.width / 2;
-  var sprite2HalfWidth = sprite2.width / 2;
-
-  var left1 = sprite1.position.x - sprite1HalfWidth;
-  var right2 = sprite2.position.x + sprite2HalfWidth;
-
-  if (left1 > right2) {
-    return false;
-  }
-
-  var left2 = sprite2.position.x - sprite2HalfWidth;
-  var right1 = sprite1.position.x + sprite1HalfWidth;
-  if (left2 > right1) {
-    return false;
-  }
-
-  var sprite1HalfHeight = sprite1.height / 2;
-  var sprite2HalfHeight = sprite2.height / 2;
-
-  var top1 = sprite1.position.y - sprite1HalfHeight;
-  var bottom2 = sprite2.position.y + sprite2HalfHeight;
-  if (top1 > bottom2) {
-    return false;
-  }
-
-  var bottom1 = sprite1.position.y + sprite1HalfHeight;
-  var top2 = sprite2.position.y - sprite2HalfHeight;
-  if (top2 > bottom1) {
-    return false;
-  }
-
-  return true;
-};
-
-
-/**
- * Shows explosion at sprite.
- * @param {!PIXI.Sprite} sprite
- * @private
- */
-cast.games.starcast.StarcastGame.prototype.showExplosion_ = function(sprite) {
-  for (var i = 0; i < this.MAX_EXPLOSIONS_; i++) {
-    var explosion = this.explosions_[i];
-    if (!explosion.visible) {
-      explosion.position.x = sprite.position.x;
-      explosion.position.y = sprite.position.y;
-      explosion.visible = true;
-      explosion.gotoAndPlay(0);
-      return;
-    }
-  }
-};
-
-
-/**
- * Callback to hide explosion.
- * @param {!PIXI.extras.MovieClip} explosion
- * @private
- */
-cast.games.starcast.StarcastGame.prototype.hideExplosion_ =
-    function(explosion) {
-  explosion.visible = false;
-};
-
-
-/**
- * Fires bullet.
- * @param {!PIXI.Sprite} player The player sprite firing the bullet.
- * @private
- */
-cast.games.starcast.StarcastGame.prototype.fireBullet_ = function(player) {
-  for (var i = 0; i < this.MAX_PLAYER_BULLETS_; i++) {
-    var bullet = this.playerBullets_[i];
-    if (!bullet.visible) {
-      bullet.position.x = player.position.x;
-      bullet.position.y = player.position.y;
-      bullet.visible = true;
-      return;
-    }
-  }
-};
