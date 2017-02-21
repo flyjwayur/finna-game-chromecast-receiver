@@ -23,7 +23,6 @@ function loadScriptsNoCache(paths) {
 
 
 loadScriptsNoCache([
-  'pixi-bundle.js',
   'pixi.js',
   // Make sure cast receiver SDK is loaded before games receiver SDK.
   'https://www.gstatic.com/cast/sdk/libs/receiver/2.0.0/cast_receiver.js',
