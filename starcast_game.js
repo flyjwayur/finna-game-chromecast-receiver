@@ -223,24 +223,30 @@ cast.games.starcast.StarcastGame.prototype.start_ = function() {
       this.boundPlayerQuitCallback_);
 };
 
-function instantiatePuzzlePieces(imageWidth, imageHeight, rowNum, colNum, container, texture) {
+function instantiatePuzzlePieces(imageWidth, imageHeight, rowNum, colNum, container) {
   var pieces = [],
     pieceWidth = imageWidth/colNum,
     pieceHeight = imageHeight/rowNum;
   for (var row = 0; row  < rowNum; row++) {
     pieces.push([]);
     for (var col = 0; col < colNum; col++) {
-      var rectangle = new PIXI.Rectangle(pieceWidth * col, pieceHeight * row,
-        pieceWidth, pieceHeight);
-      //Tell the texture to use that rectangular section
-      texture.frame = rectangle;
-      var piece = new PIXI.Sprite(texture);
-      piece.x = (pieceWidth + 5) * col; piece.y = (pieceHeight + 5) * row;
-      pieces[row].push(piece);
-      container.addChild(piece);
+      pieces[row].push(
+        createSpriteFromSpriteSheet(pieceWidth * col, pieceHeight * row,
+        pieceWidth, pieceHeight, row, col, container)
+      );
     }
   }
   return pieces;
+}
+
+function createSpriteFromSpriteSheet(x, y, width, height, row, col, container) {
+  var rectangle = new PIXI.Rectangle(x, y, width, height);
+  //Tell the texture to use that rectangular section
+  var texture = PIXI.utils.TextureCache["assets/tileset.png"];
+  texture.frame = rectangle;
+  var piece = new PIXI.Sprite(texture);
+  piece.x = (width + 5) * col; piece.y = (height + 5) * row;
+  container.addChild(piece);
 }
 
 /**
@@ -254,9 +260,7 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
   this.backgroundSprite_.height = this.canvasHeight_;
   this.container_.addChild(this.backgroundSprite_);
 
-  this.texture_ = PIXI.utils.TextureCache["assets/tileset.png"];
-
-  this.sprites_ = instantiatePuzzlePieces(192, 192, 6, 6, this.container_, this.texture_);
+  this.sprites_ = instantiatePuzzlePieces(192, 192, 4, 4, this.container_);
 
   for (var i = 0; i < this.MAX_PLAYERS_; i++) {
     var player = PIXI.Sprite.fromImage('assets/player.png');
