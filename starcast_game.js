@@ -87,6 +87,7 @@ cast.games.starcast.StarcastGame = function(gameManager) {
 
   /** @private {!PIXI.loaders.Loader} */
   this.loader_ = new PIXI.loaders.Loader();
+  this.loader_.add('assets/tileset.png');
   this.loader_.add('assets/background.jpg');
   this.loader_.add('assets/player.png');
   this.loader_.once('complete', this.onAssetsLoaded_.bind(this));
