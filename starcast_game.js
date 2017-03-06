@@ -234,9 +234,10 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
   this.backgroundSprite_.width = this.canvasWidth_;
   this.backgroundSprite_.height = this.canvasHeight_;
   this.container_.addChild(this.backgroundSprite_);
-  this.tileset_ =
-    PIXI.Sprite.fromImage('assets/tileset.png');
-  this.container_.addChild(this.tileset_);
+  this.texture_ = PIXI.utils.TextureCache["assets/tileset.png"];
+  this.sprite_ = new PIXI.Sprite(this.texture_);
+  this.sprite_.x = 150;
+  this.container_.addChild(this.sprite_);
 
   for (var i = 0; i < this.MAX_PLAYERS_; i++) {
     var player = PIXI.Sprite.fromImage('assets/player.png');
