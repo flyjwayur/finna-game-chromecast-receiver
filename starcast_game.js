@@ -234,6 +234,9 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
   this.backgroundSprite_.width = this.canvasWidth_;
   this.backgroundSprite_.height = this.canvasHeight_;
   this.container_.addChild(this.backgroundSprite_);
+  this.tileset_ =
+    PIXI.Sprite.fromImage('assets/tileset.png');
+  this.container_.addChild(this.tileset_);
 
   for (var i = 0; i < this.MAX_PLAYERS_; i++) {
     var player = PIXI.Sprite.fromImage('assets/player.png');
