@@ -223,6 +223,25 @@ cast.games.starcast.StarcastGame.prototype.start_ = function() {
       this.boundPlayerQuitCallback_);
 };
 
+function instantiatePuzzlePieces(imageWidth, imageHeight, rowNum, colNum, container, texture) {
+  var pieces = [],
+    pieceWidth = imageWidth/colNum,
+    pieceHeight = imageHeight/rowNum;
+  for (var row = 0; row  < rowNum; row++) {
+    pieces.push([]);
+    for (var col = 0; col < colNum; col++) {
+      var rectangle = new PIXI.Rectangle(pieceWidth * col, pieceHeight * row,
+        pieceWidth, pieceHeight);
+      //Tell the texture to use that rectangular section
+      texture.frame = rectangle;
+      var piece = new PIXI.Sprite(texture);
+      piece.x = (pieceWidth + 5) * col; piece.y = (pieceHeight + 5) * row;
+      pieces[row].push(piece);
+      container.addChild(piece);
+    }
+  }
+  return pieces;
+}
 
 /**
  * Called when all assets are loaded.
@@ -236,14 +255,8 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
   this.container_.addChild(this.backgroundSprite_);
 
   this.texture_ = PIXI.utils.TextureCache["assets/tileset.png"];
-  //Create a rectangle object that defines the position and
-  //size of the sub-image you want to extract from the texture
-  var rectangle = new PIXI.Rectangle(64, 64, 32, 32);
-  //Tell the texture to use that rectangular section
-  this.texture_.frame = rectangle;
-  this.sprite_ = new PIXI.Sprite(this.texture_);
-  this.sprite_.x = 150;
-  this.container_.addChild(this.sprite_);
+
+  this.sprites_ = instantiatePuzzlePieces(192, 192, 6, 6, this.container_, this.texture_);
 
   for (var i = 0; i < this.MAX_PLAYERS_; i++) {
     var player = PIXI.Sprite.fromImage('assets/player.png');
