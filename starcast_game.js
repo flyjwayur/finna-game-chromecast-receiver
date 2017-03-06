@@ -234,7 +234,13 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
   this.backgroundSprite_.width = this.canvasWidth_;
   this.backgroundSprite_.height = this.canvasHeight_;
   this.container_.addChild(this.backgroundSprite_);
+
   this.texture_ = PIXI.utils.TextureCache["assets/tileset.png"];
+  //Create a rectangle object that defines the position and
+  //size of the sub-image you want to extract from the texture
+  var rectangle = new PIXI.Rectangle(64, 64, 32, 32);
+  //Tell the texture to use that rectangular section
+  this.texture_.frame = rectangle;
   this.sprite_ = new PIXI.Sprite(this.texture_);
   this.sprite_.x = 150;
   this.container_.addChild(this.sprite_);
