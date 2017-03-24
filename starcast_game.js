@@ -242,7 +242,7 @@ function instantiatePuzzlePieces(imageWidth, imageHeight, rowNum, colNum, contai
 function createSpriteFromSpriteSheet(x, y, width, height, row, col, container) {
   var rectangle = new PIXI.Rectangle(x, y, width, height);
   //Tell the texture to use that rectangular section
-  var texture = PIXI.utils.TextureCache["assets/tileset.png"];
+  var texture = new PIXI.Texture(PIXI.BaseTexture.fromImage("assets/tileset.png"));
   texture.frame = rectangle;
   var piece = new PIXI.Sprite(texture);
   piece.x = (width + 5) * col; piece.y = (height + 5) * row;
