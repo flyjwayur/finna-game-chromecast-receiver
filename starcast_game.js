@@ -245,7 +245,10 @@ function createSpriteFromSpriteSheet(x, y, width, height, row, col, container) {
   var texture = new PIXI.Texture(PIXI.BaseTexture.fromImage("assets/tileset.png"));
   texture.frame = rectangle;
   var piece = new PIXI.Sprite(texture);
-  piece.x = (width + 5) * col; piece.y = (height + 5) * row;
+  // piece.x = (width + 5) * col; piece.y = (height + 5) * row;
+  // centers all pieces
+  piece.x = container.width / 2 - piece.width / 2;
+  piece.y = container.height / 2 - piece.height / 2;
   container.addChild(piece);
 }
 
