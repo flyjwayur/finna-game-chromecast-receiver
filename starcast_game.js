@@ -250,6 +250,8 @@ function createSpriteFromSpriteSheet(x, y, width, height, row, col, container) {
   piece.x = container.width / 2 - piece.width / 2;
   piece.y = container.height / 2 - piece.height / 2;
   container.addChild(piece);
+  // spread pieces evenly
+  piece.x = piece.x + (width * col); piece.y = piece.y + (height * row);
 }
 
 /**
