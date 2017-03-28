@@ -227,6 +227,7 @@ function instantiatePuzzlePieces(imageWidth, imageHeight, rowNum, colNum, contai
   var pieces = [],
     pieceWidth = imageWidth/colNum,
     pieceHeight = imageHeight/rowNum;
+
   for (var row = 0; row  < rowNum; row++) {
     pieces.push([]);
     for (var col = 0; col < colNum; col++) {
@@ -236,6 +237,30 @@ function instantiatePuzzlePieces(imageWidth, imageHeight, rowNum, colNum, contai
       );
     }
   }
+  // flip random rows
+  for (row = 0; row  < rowNum; row++) {
+    if (Math.random() < 0.5) {
+      for (col = 0; col < colNum; col++) {
+        pieces[row][col].visible = !pieces[row][col].visible;
+      }
+    }
+  }
+  // flip random cols
+  for (col = 0; col  < colNum; col++) {
+    if (Math.random() < 0.5) {
+      for (row = 0; row < rowNum; row++) {
+        pieces[row][col].visible = !pieces[row][col].visible;
+      }
+    }
+  }
+
+  // randomly flip diagonal or not
+  if (Math.random() < 0.5) {
+    for (var i  = 0; i  < colNum; i++) {
+      pieces[i][i].visible = !pieces[i][i].visible;
+    }
+  }
+
   return pieces;
 }
 
@@ -245,13 +270,14 @@ function createSpriteFromSpriteSheet(x, y, width, height, row, col, container) {
   var texture = new PIXI.Texture(PIXI.BaseTexture.fromImage("assets/tileset.png"));
   texture.frame = rectangle;
   var piece = new PIXI.Sprite(texture);
-  // piece.x = (width + 5) * col; piece.y = (height + 5) * row;
   // centers all pieces
   piece.x = container.width / 2 - piece.width / 2;
   piece.y = container.height / 2 - piece.height / 2;
-  container.addChild(piece);
   // spread pieces evenly
   piece.x = piece.x + (width * col); piece.y = piece.y + (height * row);
+  // add piece to stage
+  container.addChild(piece);
+  return piece;
 }
 
 /**
@@ -265,7 +291,7 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
   this.backgroundSprite_.height = this.canvasHeight_;
   this.container_.addChild(this.backgroundSprite_);
 
-  this.sprites_ = instantiatePuzzlePieces(192, 192, 4, 4, this.container_);
+  this.sprites_ = instantiatePuzzlePieces(192, 192, 5, 5, this.container_);
 
   for (var i = 0; i < this.MAX_PLAYERS_; i++) {
     var player = PIXI.Sprite.fromImage('assets/player.png');
