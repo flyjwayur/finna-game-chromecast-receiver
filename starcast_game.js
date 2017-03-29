@@ -300,7 +300,7 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
   this.backgroundSprite_.height = this.canvasHeight_;
   this.container_.addChild(this.backgroundSprite_);
 
-  this.sprites_ = instantiatePuzzlePieces(192, 192, 5, 5, this.container_);
+  this.sprites_ = instantiatePuzzlePieces(192, 192, 6, 6, this.container_);
 
   for (var i = 0; i < this.MAX_PLAYERS_; i++) {
     var player = PIXI.Sprite.fromImage('assets/player.png');
