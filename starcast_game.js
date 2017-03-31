@@ -90,7 +90,7 @@ cast.games.starcast.StarcastGame = function(gameManager) {
   this.loader_.add('assets/tileset.png');
   this.loader_.add('assets/background.jpg');
   this.loader_.add('assets/player.png');
-  this.loader_.add('assets/controlButtons.json')
+  this.loader_.add('assets/controlButtons.json');
   this.loader_.once('complete', this.onAssetsLoaded_.bind(this));
 
   /** @private {?function()} Callback used with #run. */
@@ -290,15 +290,6 @@ function createSpriteFromSpriteSheet(x, y, width, height, row, col, container) {
   return piece;
 }
 
-function createControlButtons(container){
-
-    // Create an alias called 'id' that points to texture's altas's textures object
-    var id = PIXI.loader.resources["assets/controlButton.json"].PIXI.textures;
-    var greenButtonSprite = new PIXI.Sprite(id["greenButton.png"]);
-    greenButtonTexture.x = 68;
-    container.addChild(greenButtonSprite);
-}
-
 /**
  * Called when all assets are loaded.
  * @private
@@ -311,6 +302,21 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
   this.container_.addChild(this.backgroundSprite_);
 
   this.sprites_ = instantiatePuzzlePieces(192, 192, 6, 6, this.container_);
+
+  // Create an alias called 'id' that points to texture's altas's textures object
+  // var id = PIXI.loader.resources["assets/controlButtons.json"].textures;
+  var id = this.loader_.resources["assets/controlButtons.json"].textures;
+  // var greenButtonSprite = new PIXI.Sprite(PIXI.Texture.fromFrame("greenButton.png"));
+  var greenButtonSprite = new PIXI.Sprite(id["blueButton.png"]);
+  // greenButtonTexture.x = 68;
+  // greenButtonTexture.y = 68;
+  // var blueButtonSprite = new PIXI.Sprite(PIXI.Texture.fromFrame("blueButton.png"));
+  var blueButtonSprite = new PIXI.Sprite(id["blueButton.png"]);
+  // blueButtonSprite.x = 200;
+  // blueButtonSprite.y = 200;
+
+  this.container_.addChild(greenButtonSprite);
+  this.container_.addChild(blueButtonSprite);
 
   for (var i = 0; i < this.MAX_PLAYERS_; i++) {
     var player = PIXI.Sprite.fromImage('assets/player.png');
