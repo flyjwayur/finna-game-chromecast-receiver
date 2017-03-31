@@ -307,13 +307,13 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
   // var id = PIXI.loader.resources["assets/controlButtons.json"].textures;
   var id = this.loader_.resources["assets/controlButtons.json"].textures;
   // var greenButtonSprite = new PIXI.Sprite(PIXI.Texture.fromFrame("greenButton.png"));
-  var greenButtonSprite = new PIXI.Sprite(id["blueButton.png"]);
-  // greenButtonTexture.x = 68;
-  // greenButtonTexture.y = 68;
+  var greenButtonSprite = new PIXI.Sprite(id["greenButton.png"]);
+  greenButtonSprite.position.x = 300;
+  greenButtonSprite.position.y = 300;
   // var blueButtonSprite = new PIXI.Sprite(PIXI.Texture.fromFrame("blueButton.png"));
   var blueButtonSprite = new PIXI.Sprite(id["blueButton.png"]);
-  // blueButtonSprite.x = 200;
-  // blueButtonSprite.y = 200;
+  blueButtonSprite.position.x = 150;
+  blueButtonSprite.position.y = 150;
 
   this.container_.addChild(greenButtonSprite);
   this.container_.addChild(blueButtonSprite);
