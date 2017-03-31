@@ -90,6 +90,7 @@ cast.games.starcast.StarcastGame = function(gameManager) {
   this.loader_.add('assets/tileset.png');
   this.loader_.add('assets/background.jpg');
   this.loader_.add('assets/player.png');
+  this.loader_.add('assets/controlButtons.json')
   this.loader_.once('complete', this.onAssetsLoaded_.bind(this));
 
   /** @private {?function()} Callback used with #run. */
