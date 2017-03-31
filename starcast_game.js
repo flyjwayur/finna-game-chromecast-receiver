@@ -290,6 +290,15 @@ function createSpriteFromSpriteSheet(x, y, width, height, row, col, container) {
   return piece;
 }
 
+function createControlButtons(container){
+
+    // Create an alias called 'id' that points to texture's altas's textures object
+    var id = PIXI.loader.resources["assets/controlButton.json"].PIXI.textures;
+    var greenButtonSprite = new PIXI.Sprite(id["greenButton.png"]);
+    greenButtonTexture.x = 68;
+    container.addChild(greenButtonSprite);
+}
+
 /**
  * Called when all assets are loaded.
  * @private
