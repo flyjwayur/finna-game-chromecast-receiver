@@ -306,17 +306,39 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
   // Create an alias called 'id' that points to texture's altas's textures object
   // var id = PIXI.loader.resources["assets/controlButtons.json"].textures;
   var id = this.loader_.resources["assets/controlButtons.json"].textures;
+
+  //Create Green control button
   // var greenButtonSprite = new PIXI.Sprite(PIXI.Texture.fromFrame("greenButton.png"));
   var greenButtonSprite = new PIXI.Sprite(id["greenButton.png"]);
   greenButtonSprite.position.x = 300;
   greenButtonSprite.position.y = 300;
+
+  //Create Blue control button
   // var blueButtonSprite = new PIXI.Sprite(PIXI.Texture.fromFrame("blueButton.png"));
   var blueButtonSprite = new PIXI.Sprite(id["blueButton.png"]);
   blueButtonSprite.position.x = 150;
   blueButtonSprite.position.y = 150;
 
+  //Create yellow control button
+  var yellowButtonSprite = new PIXI.Sprite(id["yellowButton.png"]);
+  yellowButtonSprite.position.x = 450;
+  yellowButtonSprite.position.y = 450;
+
+  //Create red control button
+  var redButtonSprite = new PIXI.Sprite(id["redButton.png"]);
+  redButtonSprite.position.x = 600;
+  redButtonSprite.position.y = 600;
+
+  //Create purple control button
+  var purpleButtonSprite = new PIXI.Sprite(id["purpleButton.png"]);
+  purpleButtonSprite.position.x = 750;
+  purpleButtonSprite.position.y = 750;
+
   this.container_.addChild(greenButtonSprite);
   this.container_.addChild(blueButtonSprite);
+  this.container_.addChild(yellowButtonSprite);
+  this.container_.addChild(redButtonSprite);
+  this.container_.addChild(purpleButtonSprite);
 
   for (var i = 0; i < this.MAX_PLAYERS_; i++) {
     var player = PIXI.Sprite.fromImage('assets/player.png');
