@@ -224,7 +224,8 @@ cast.games.starcast.StarcastGame.prototype.start_ = function() {
       this.boundPlayerQuitCallback_);
 };
 
-function instantiatePuzzlePieces(imageWidth, imageHeight, rowNum, colNum, container) {
+function instantiatePuzzlePiecesAndControlButtons(imageWidth, imageHeight, rowNum, colNum,
+                                                  container, buttonTextureId) {
   var pieces = [],
     pieceWidth = imageWidth/colNum,
     pieceHeight = imageHeight/rowNum;
@@ -261,6 +262,38 @@ function instantiatePuzzlePieces(imageWidth, imageHeight, rowNum, colNum, contai
       pieces[i][i].visible = !pieces[i][i].visible;
     }
   }
+
+  //Create Green control button
+  var greenButtonSprite = new PIXI.Sprite(buttonTextureId["greenButton.png"]);
+  greenButtonSprite.position.x = 300;
+  greenButtonSprite.position.y = 300;
+
+
+  //Create Blue control button
+  var blueButtonSprite = new PIXI.Sprite(buttonTextureId["blueButton.png"]);
+  blueButtonSprite.position.x = 150;
+  blueButtonSprite.position.y = 150;
+
+  //Create yellow control button
+  var yellowButtonSprite = new PIXI.Sprite(buttonTextureId["yellowButton.png"]);
+  yellowButtonSprite.position.x = 450;
+  yellowButtonSprite.position.y = 450;
+
+  //Create red control button
+  var redButtonSprite = new PIXI.Sprite(buttonTextureId["redButton.png"]);
+  redButtonSprite.position.x = 600;
+  redButtonSprite.position.y = 600;
+
+  //Create purple control button
+  var purpleButtonSprite = new PIXI.Sprite(buttonTextureId["purpleButton.png"]);
+  purpleButtonSprite.position.x = 750;
+  purpleButtonSprite.position.y = 750;
+
+  container.addChild(greenButtonSprite);
+  container.addChild(blueButtonSprite);
+  container.addChild(yellowButtonSprite);
+  container.addChild(redButtonSprite);
+  container.addChild(purpleButtonSprite);
 
   return pieces;
 }
@@ -301,44 +334,8 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
   this.backgroundSprite_.height = this.canvasHeight_;
   this.container_.addChild(this.backgroundSprite_);
 
-  this.sprites_ = instantiatePuzzlePieces(192, 192, 6, 6, this.container_);
-
-  // Create an alias called 'id' that points to texture's altas's textures object
-  // var id = PIXI.loader.resources["assets/controlButtons.json"].textures;
-  var id = this.loader_.resources["assets/controlButtons.json"].textures;
-
-  //Create Green control button
-  // var greenButtonSprite = new PIXI.Sprite(PIXI.Texture.fromFrame("greenButton.png"));
-  var greenButtonSprite = new PIXI.Sprite(id["greenButton.png"]);
-  greenButtonSprite.position.x = 300;
-  greenButtonSprite.position.y = 300;
-
-  //Create Blue control button
-  // var blueButtonSprite = new PIXI.Sprite(PIXI.Texture.fromFrame("blueButton.png"));
-  var blueButtonSprite = new PIXI.Sprite(id["blueButton.png"]);
-  blueButtonSprite.position.x = 150;
-  blueButtonSprite.position.y = 150;
-
-  //Create yellow control button
-  var yellowButtonSprite = new PIXI.Sprite(id["yellowButton.png"]);
-  yellowButtonSprite.position.x = 450;
-  yellowButtonSprite.position.y = 450;
-
-  //Create red control button
-  var redButtonSprite = new PIXI.Sprite(id["redButton.png"]);
-  redButtonSprite.position.x = 600;
-  redButtonSprite.position.y = 600;
-
-  //Create purple control button
-  var purpleButtonSprite = new PIXI.Sprite(id["purpleButton.png"]);
-  purpleButtonSprite.position.x = 750;
-  purpleButtonSprite.position.y = 750;
-
-  this.container_.addChild(greenButtonSprite);
-  this.container_.addChild(blueButtonSprite);
-  this.container_.addChild(yellowButtonSprite);
-  this.container_.addChild(redButtonSprite);
-  this.container_.addChild(purpleButtonSprite);
+  this.sprites_ = instantiatePuzzlePiecesAndControlButtons(192, 192, 6, 6,
+    this.container_, this.loader_.resources["assets/controlButtons.json"].textures);
 
   for (var i = 0; i < this.MAX_PLAYERS_; i++) {
     var player = PIXI.Sprite.fromImage('assets/player.png');
