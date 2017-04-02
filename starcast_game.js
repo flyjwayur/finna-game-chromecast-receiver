@@ -224,33 +224,51 @@ cast.games.starcast.StarcastGame.prototype.start_ = function() {
       this.boundPlayerQuitCallback_);
 };
 
-function instantiatePuzzlePiecesAndControlButtons(imageWidth, imageHeight, rowNum, colNum,
+function instantiatePuzzlePiecesAndControlButtons(imageWidth, imageHeight, totalRow, totalCol,
                                                   container, buttonTextureId) {
   var pieces = [],
-    pieceWidth = imageWidth/colNum,
-    pieceHeight = imageHeight/rowNum;
+    pieceWidth = imageWidth/totalCol,
+    pieceHeight = imageHeight/totalRow;
 
-  for (var row = 0; row  < rowNum; row++) {
+  var leftSideButtonsArray = [];
+  leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["greenButton.png"]));
+  leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["blueButton.png"]));
+  leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["yellowButton.png"]));
+  leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["redButton.png"]));
+  leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["purpleButton.png"]));
+  leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["greenButton.png"]));
+
+  var bottomSideButtonsArray = [];
+  bottomSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["greenButton.png"]));
+  bottomSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["blueButton.png"]));
+  bottomSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["yellowButton.png"]));
+  bottomSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["redButton.png"]));
+  bottomSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["purpleButton.png"]));
+  bottomSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["greenButton.png"]));
+
+  for (var row = 0; row  < totalRow; row++) {
     pieces.push([]);
-    for (var col = 0; col < colNum; col++) {
+    createLeftSideButtons(leftSideButtonsArray, row, totalRow, totalCol, pieceWidth, pieceHeight, container);
+    for (var col = 0; col < totalCol; col++) {
       pieces[row].push(
-        createSpriteFromSpriteSheet(pieceWidth * col, pieceHeight * row,
-        pieceWidth, pieceHeight, row, col, container)
+        createSpriteFromSpriteSheet(pieceWidth, pieceHeight, row, col,
+          totalRow, totalCol, container)
       );
+      createBottomSideButtons(bottomSideButtonsArray, col, totalRow, totalCol, pieceWidth, pieceHeight, container);
     }
   }
   // flip random rows
-  for (row = 0; row  < rowNum; row++) {
+  for (row = 0; row  < totalRow; row++) {
     if (Math.random() < 0.5) {
-      for (col = 0; col < colNum; col++) {
+      for (col = 0; col < totalCol; col++) {
         pieces[row][col].visible = !pieces[row][col].visible;
       }
     }
   }
   // flip random cols
-  for (col = 0; col  < colNum; col++) {
+  for (col = 0; col  < totalCol; col++) {
     if (Math.random() < 0.5) {
-      for (row = 0; row < rowNum; row++) {
+      for (row = 0; row < totalRow; row++) {
         pieces[row][col].visible = !pieces[row][col].visible;
       }
     }
@@ -258,56 +276,45 @@ function instantiatePuzzlePiecesAndControlButtons(imageWidth, imageHeight, rowNu
 
   // randomly flip diagonal or not
   if (Math.random() < 0.5) {
-    for (var i  = 0; i  < colNum; i++) {
+    for (var i  = 0; i  < totalCol; i++) {
       pieces[i][i].visible = !pieces[i][i].visible;
     }
   }
 
-  //Create Green control button
-  var greenButtonSprite = new PIXI.Sprite(buttonTextureId["greenButton.png"]);
-  greenButtonSprite.position.x = 300;
-  greenButtonSprite.position.y = 300;
-
-
-  //Create Blue control button
-  var blueButtonSprite = new PIXI.Sprite(buttonTextureId["blueButton.png"]);
-  blueButtonSprite.position.x = 150;
-  blueButtonSprite.position.y = 150;
-
-  //Create yellow control button
-  var yellowButtonSprite = new PIXI.Sprite(buttonTextureId["yellowButton.png"]);
-  yellowButtonSprite.position.x = 450;
-  yellowButtonSprite.position.y = 450;
-
-  //Create red control button
-  var redButtonSprite = new PIXI.Sprite(buttonTextureId["redButton.png"]);
-  redButtonSprite.position.x = 600;
-  redButtonSprite.position.y = 600;
-
-  //Create purple control button
-  var purpleButtonSprite = new PIXI.Sprite(buttonTextureId["purpleButton.png"]);
-  purpleButtonSprite.position.x = 750;
-  purpleButtonSprite.position.y = 750;
-
-  container.addChild(greenButtonSprite);
-  container.addChild(blueButtonSprite);
-  container.addChild(yellowButtonSprite);
-  container.addChild(redButtonSprite);
-  container.addChild(purpleButtonSprite);
-
   return pieces;
 }
 
-function createSpriteFromSpriteSheet(x, y, width, height, row, col, container) {
-  var rectangle = new PIXI.Rectangle(x, y, width, height);
+function createLeftSideButtons(buttonsArray, row, totalRow, totalCol, pieceWidth, pieceHeight, container) {
+  var button = buttonsArray[row % buttonsArray.length];
+  // set a button at top left of the puzzles
+  button.position.x = container.width / 2 - pieceWidth / 2 - (pieceWidth * (totalCol + 1.6));
+  button.position.y = container.height / 2 - pieceHeight / 2 - (pieceHeight * (totalRow - 0.2));
+  // set button's proper y
+  button.position.y = button.position.y + (pieceHeight * row * 2);
+  container.addChild(button);
+}
+
+function createBottomSideButtons(buttonsArray, col, totalRow, totalCol, pieceWidth, pieceHeight, container) {
+  var button = buttonsArray[col % buttonsArray.length];
+  // set a button at top left of the puzzles
+  button.position.x = container.width / 2 - pieceWidth / 2 - (pieceWidth * (totalCol - 0.2));
+  button.position.y = container.height / 2 - pieceHeight / 2 + (pieceHeight * (totalRow + 0.1));
+  // set button's proper y
+  button.position.x = button.position.x + (pieceHeight * col * 2);
+  container.addChild(button);
+}
+
+function createSpriteFromSpriteSheet(width, height, row, col,
+                                     totalRow, totalCol, container) {
+  var rectangle = new PIXI.Rectangle(width * col, height * row, width, height);
   //Tell the texture to use that rectangular section
   var texture = new PIXI.Texture(PIXI.BaseTexture.fromImage("assets/tileset.png"));
   texture.frame = rectangle;
   var piece = new PIXI.Sprite(texture);
 
   // Center all pieces
-  piece.x = container.width / 2 - piece.width / 2 - (col + 192);
-  piece.y = container.height / 2 - piece.height / 2 - (row + 144);
+  piece.x = container.width / 2 - piece.width / 2 - (width * totalCol);
+  piece.y = container.height / 2 - piece.height / 2 - (height * totalRow);
 
   // Scale all pieces
   piece.scale.x = 2;
