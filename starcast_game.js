@@ -226,7 +226,7 @@ cast.games.starcast.StarcastGame.prototype.start_ = function() {
 };
 
 function instantiatePuzzlePiecesAndControlButtons(imageWidth, imageHeight, totalRow, totalCol,
-                                                  container, buttonTextureId) {
+                                                  container, buttonTextureId, diagonalControlButton) {
   var pieces = [],
     pieceWidth = imageWidth/totalCol,
     pieceHeight = imageHeight/totalRow;
@@ -258,6 +258,9 @@ function instantiatePuzzlePiecesAndControlButtons(imageWidth, imageHeight, total
       createBottomSideButtons(bottomSideButtonsArray, col, totalRow, totalCol, pieceWidth, pieceHeight, container);
     }
   }
+
+  container.addChild(diagonalControlButton);
+
   // flip random rows
   for (row = 0; row  < totalRow; row++) {
     if (Math.random() < 0.5) {
@@ -342,11 +345,10 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
   this.backgroundSprite_.height = this.canvasHeight_;
   this.container_.addChild(this.backgroundSprite_);
 
-  this.sprites_ = instantiatePuzzlePiecesAndControlButtons(192, 192, 6, 6,
-    this.container_, this.loader_.resources["assets/controlButtons.json"].textures);
+  this.diagonalControlButton_ = PIXI.Sprite.fromImage("assets/starControl_diagonal.png");
 
-  this.star_ = PIXI.Sprite.fromImage("assets/starControl_diagonal.png");
-  this.container_.addChild(this.star_);
+  this.sprites_ = instantiatePuzzlePiecesAndControlButtons(192, 192, 6, 6,
+  this.container_, this.loader_.resources["assets/controlButtons.json"].textures, this.diagonalControlButton_);
 
   for (var i = 0; i < this.MAX_PLAYERS_; i++) {
     var player = PIXI.Sprite.fromImage('assets/player.png');
