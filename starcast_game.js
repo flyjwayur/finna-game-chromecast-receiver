@@ -91,6 +91,7 @@ cast.games.starcast.StarcastGame = function(gameManager) {
   this.loader_.add('assets/background.jpg');
   this.loader_.add('assets/player.png');
   this.loader_.add('assets/controlButtons.json');
+  this.loader_.add('assets/starControl_diagonal.png');
   this.loader_.once('complete', this.onAssetsLoaded_.bind(this));
 
   /** @private {?function()} Callback used with #run. */
@@ -343,6 +344,9 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
 
   this.sprites_ = instantiatePuzzlePiecesAndControlButtons(192, 192, 6, 6,
     this.container_, this.loader_.resources["assets/controlButtons.json"].textures);
+
+  this.star_ = PIXI.Sprite.fromImage("assets/starControl_diagonal.png");
+  this.container_.addChild(this.star_);
 
   for (var i = 0; i < this.MAX_PLAYERS_; i++) {
     var player = PIXI.Sprite.fromImage('assets/player.png');
