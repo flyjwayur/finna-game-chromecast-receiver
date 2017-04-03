@@ -232,15 +232,17 @@ function instantiatePuzzlePiecesAndControlButtons(imageWidth, imageHeight, total
     pieceHeight = imageHeight/totalRow;
 
   var leftSideButtonsArray = [];
+  var leftSideBottommostButton = new PIXI.Sprite(buttonTextureId["greenButton.png"]);
   leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["greenButton.png"]));
   leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["blueButton.png"]));
   leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["yellowButton.png"]));
   leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["redButton.png"]));
   leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["purpleButton.png"]));
-  leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["greenButton.png"]));
+  leftSideButtonsArray.push(leftSideBottommostButton);
 
   var bottomSideButtonsArray = [];
-  bottomSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["greenButton.png"]));
+  var bottomSideLeftmostButton = new PIXI.Sprite(buttonTextureId["greenButton.png"]);
+  bottomSideButtonsArray.push(bottomSideLeftmostButton);
   bottomSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["blueButton.png"]));
   bottomSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["yellowButton.png"]));
   bottomSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["redButton.png"]));
@@ -259,6 +261,8 @@ function instantiatePuzzlePiecesAndControlButtons(imageWidth, imageHeight, total
     }
   }
 
+  //Make a position for the diagonal control button
+  diagonalControlButton.position.set(leftSideBottommostButton.x, bottomSideLeftmostButton.y);
   container.addChild(diagonalControlButton);
 
   // flip random rows
