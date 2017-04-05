@@ -131,7 +131,7 @@ var MESSAGE_UP = "UP";
 var MESSAGE_DOWN = "DOWN";
 var MESSAGE_LEFT = "LEFT";
 var MESSAGE_RIGHT = "RIGHT";
-
+var MESSAGE_DIAGONAL_FLIP = "FLIP";
 /**
  * Runs the game. Game should load if not loaded yet.
  * @param {function()} loadedCallback This function will be called when the game
@@ -510,7 +510,6 @@ cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ =
   }
 
   movePlayerSprite(playerSprite, direction);
-
 };
 
 function movePlayerSprite(playerSprite, direction) {
@@ -527,6 +526,9 @@ function movePlayerSprite(playerSprite, direction) {
       break;
     case MESSAGE_RIGHT:
       playerSprite.position.x = playerSprite.position.x + 5;
+      break;
+    case MESSAGE_DIAGONAL_FLIP:
+      playerSprite.position.x = playerSprite.position.x + 20;
       break;
   }
 }
