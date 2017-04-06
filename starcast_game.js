@@ -60,6 +60,9 @@ cast.games.starcast.StarcastGame = function(gameManager) {
    */
   this.playerMap_ = {};
 
+  /** @private {!Array.<!PIXI.Sprite>} All pieces sprites. */
+  this.pieces_ = [];
+
   /** @private {!Uint32Array} Used for loop iterators in #update */
   this.loopIterator_ = new Uint32Array(2);
 
@@ -225,11 +228,10 @@ cast.games.starcast.StarcastGame.prototype.start_ = function() {
       this.boundPlayerQuitCallback_);
 };
 
-function instantiatePuzzlePiecesAndControlButtons(imageWidth, imageHeight, totalRow, totalCol,
-                                                  container, buttonTextureId, diagonalControlButton) {
-  var pieces = [],
-    pieceWidth = imageWidth/totalCol,
-    pieceHeight = imageHeight/totalRow;
+cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButtons = function(imageWidth, imageHeight, totalRow, totalCol,
+                                                  container, buttonTextureId, diagonalControlButton){
+  var pieceWidth = imageWidth/totalCol,
+      pieceHeight = imageHeight/totalRow;
 
   var leftSideButtonsArray = [];
   var leftSideBottommostButton = new PIXI.Sprite(buttonTextureId["greenButton.png"]);
@@ -250,10 +252,10 @@ function instantiatePuzzlePiecesAndControlButtons(imageWidth, imageHeight, total
   bottomSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["greenButton.png"]));
 
   for (var row = 0; row  < totalRow; row++) {
-    pieces.push([]);
+    this.pieces_.push([]);
     createLeftSideButtons(leftSideButtonsArray, row, totalRow, totalCol, pieceWidth, pieceHeight, container);
     for (var col = 0; col < totalCol; col++) {
-      pieces[row].push(
+      this.pieces_[row].push(
         createSpriteFromSpriteSheet(pieceWidth, pieceHeight, row, col,
           totalRow, totalCol, container)
       );
@@ -269,7 +271,7 @@ function instantiatePuzzlePiecesAndControlButtons(imageWidth, imageHeight, total
   for (row = 0; row  < totalRow; row++) {
     if (Math.random() < 0.5) {
       for (col = 0; col < totalCol; col++) {
-        pieces[row][col].visible = !pieces[row][col].visible;
+        this.pieces_[row][col].visible = !this.pieces_[row][col].visible;
       }
     }
   }
@@ -277,7 +279,7 @@ function instantiatePuzzlePiecesAndControlButtons(imageWidth, imageHeight, total
   for (col = 0; col  < totalCol; col++) {
     if (Math.random() < 0.5) {
       for (row = 0; row < totalRow; row++) {
-        pieces[row][col].visible = !pieces[row][col].visible;
+        this.pieces_[row][col].visible = !this.pieces_[row][col].visible;
       }
     }
   }
@@ -285,11 +287,11 @@ function instantiatePuzzlePiecesAndControlButtons(imageWidth, imageHeight, total
   // randomly flip diagonal or not
   if (Math.random() < 0.5) {
     for (var i  = 0; i  < totalCol; i++) {
-      pieces[i][i].visible = !pieces[i][i].visible;
+      this.pieces_[i][i].visible = !this.pieces_[i][i].visible;
     }
   }
 
-  return pieces;
+  return this.pieces_;
 }
 
 function createLeftSideButtons(buttonsArray, row, totalRow, totalCol, pieceWidth, pieceHeight, container) {
@@ -351,7 +353,7 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
 
   this.diagonalControlButton_ = PIXI.Sprite.fromImage("assets/starControl_diagonal.png");
 
-  this.sprites_ = instantiatePuzzlePiecesAndControlButtons(192, 192, 6, 6,
+  this.sprites_ = this.instantiatePuzzlePiecesAndControlButtons(192, 192, 6, 6,
   this.container_, this.loader_.resources["assets/controlButtons.json"].textures, this.diagonalControlButton_);
 
   for (var i = 0; i < this.MAX_PLAYERS_; i++) {
@@ -487,6 +489,10 @@ cast.games.starcast.StarcastGame.prototype.onGameMessage_ = function(event) {
 
   var directionField = event.requestExtraMessageData[cast.games.starcast.StarcastGame.DIRECTION_FIELD_];
   this.onPlayerMessage_(player, directionField);
+
+ /* if(MESSAGE_DIAGONAL_FLIP){
+    this.pieces_.visible = false;
+  }*/
 };
 
 
@@ -498,8 +504,7 @@ cast.games.starcast.StarcastGame.prototype.onGameMessage_ = function(event) {
  * @param {number} move Only used if fire parameter is true.
  * @private
  */
-cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ =
-    function(player, direction) {
+cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ = function(player, direction) {
 
   player.tint = Math.random() * 0xffffff;
   console.log("onPlayerMessage" + direction);
@@ -509,10 +514,10 @@ cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ =
     throw Error('No player sprite found for player ' + player.playerId);
   }
 
-  movePlayerSprite(playerSprite, direction);
+  this.movePlayerSprite_(playerSprite, direction);
 };
 
-function movePlayerSprite(playerSprite, direction) {
+cast.games.starcast.StarcastGame.prototype.movePlayerSprite_ = function(playerSprite, direction) {
   // TODO: Normalize sprite location
   switch(direction) {
     case MESSAGE_UP:
@@ -528,7 +533,10 @@ function movePlayerSprite(playerSprite, direction) {
       playerSprite.position.x = playerSprite.position.x + 5;
       break;
     case MESSAGE_DIAGONAL_FLIP:
-      playerSprite.position.x = playerSprite.position.x + 20;
+      for (var i = 0; i < this.pieces_.length; i++) {
+        this.pieces_[this.pieces_.length - i - 1][i].visible =
+          !this.pieces_[this.pieces_.length - i - 1][i].visible;
+      }
       break;
   }
 }
