@@ -279,7 +279,8 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
   // randomly flip diagonal or not
   if (Math.random() < 0.5) {
     for (var i  = 0; i  < totalCol; i++) {
-      this.pieces_[i][i].visible = !this.pieces_[i][i].visible;
+      this.pieces_[this.pieces_.length - i - 1][i].visible =
+        !this.pieces_[this.pieces_.length - i - 1][i].visible;
     }
   }
 
