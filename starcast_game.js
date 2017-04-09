@@ -124,22 +124,8 @@ cast.games.starcast.StarcastGame = function(gameManager) {
  * JSON message field used to move.
  * @private
  */
-cast.games.starcast.StarcastGame.DIRECTION_FIELD_ = 'direction';
-cast.games.starcast.StarcastGame.CONTROLBUTTONS_FIELD_ = "controlButton";
-
-
-
-
-/**
- * constants
- */
-
-var MESSAGE_UP = "UP";
-var MESSAGE_DOWN = "DOWN";
-var MESSAGE_LEFT = "LEFT";
-var MESSAGE_RIGHT = "RIGHT";
-var MESSAGE_DIAGONAL_FLIP = "FLIP";
-var MESSAGE_FIRST_ROW = "FIRSTROW";
+cast.games.starcast.StarcastGame.ROW_OR_COL_FIELD_ = "rowOrCol";
+cast.games.starcast.StarcastGame.NUM_ROW_OR_COL_FIELD_ = "numRowOrCol";
 
 /**
  * Runs the game. Game should load if not loaded yet.
@@ -493,14 +479,10 @@ cast.games.starcast.StarcastGame.prototype.onGameMessage_ = function(event) {
     throw Error('No player found for player ID ' + event.playerInfo.playerId);
   }
 
-  /*var directionField = event.requestExtraMessageData[cast.games.starcast.StarcastGame.DIRECTION_FIELD_];
-  this.onPlayerMessage_(player, directionField);*/
+  var rowOrCol = event.requestExtraMessageData[cast.games.starcast.StarcastGame.ROW_OR_COL_FIELD_];
+  var numRowOrCol = event.requestExtraMessageData[cast.games.starcast.StarcastGame.NUM_ROW_OR_COL_FIELD_];
+  this.onPlayerMessage_(player, rowOrCol, numRowOrCol);
 
-  var buttonControlField = event.requestExtraMessageData[cast.games.starcast.StarcastGame.CONTROLBUTTONS_FIELD_];
-  this.onPlayerMessage_(player, buttonControlField);
- /* if(MESSAGE_DIAGONAL_FLIP){
-    this.pieces_.visible = false;
-  }*/
 };
 
 
@@ -512,42 +494,36 @@ cast.games.starcast.StarcastGame.prototype.onGameMessage_ = function(event) {
  * @param {number} move Only used if fire parameter is true.
  * @private
  */
-cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ = function(player, buttonControl) {
+cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ = function(player, rowOrCol, numRowOrCol) {
 
   player.tint = Math.random() * 0xffffff;
-  console.log("onPlayerMessage" + buttonControl);
+  console.log("onPlayerMessage" + rowOrCol + ", " + numRowOrCol);
 
   var playerSprite = this.playerMap_[player.playerId];
   if (!playerSprite) {
     throw Error('No player sprite found for player ' + player.playerId);
   }
 
-  this.movePlayerSprite_(playerSprite, buttonControl);
+  this.flipPieces(playerSprite, rowOrCol, numRowOrCol);
 };
 
-cast.games.starcast.StarcastGame.prototype.movePlayerSprite_ = function(playerSprite, buttonControl) {
-  // TODO: Normalize sprite location
-  switch(buttonControl) {
-/*    case MESSAGE_UP:
-      playerSprite.position.y = playerSprite.position.y - 5;
-      break;
-    case MESSAGE_DOWN:
-      playerSprite.position.y = playerSprite.position.y + 5;
-      break;
-    case MESSAGE_LEFT:
-      playerSprite.position.x = playerSprite.position.x - 5;
-      break;
-    case MESSAGE_RIGHT:
-      playerSprite.position.x = playerSprite.position.x + 5;
-      break;
-    case MESSAGE_DIAGONAL_FLIP:
+cast.games.starcast.StarcastGame.prototype.flipPieces = function(playerSprite, rowOrCol, numRowOrCol) {
+    if (rowOrCol == "ROW") {
       for (var i = 0; i < this.pieces_.length; i++) {
+        this.pieces_[numRowOrCol][i].visible =
+          !this.pieces_[numRowOrCol][i].visible;
+      }
+    } else if (rowOrCol == "COL") {
+      for (i = 0; i < this.pieces_.length; i++) {
+        this.pieces_[i][numRowOrCol].visible =
+          !this.pieces_[i][numRowOrCol].visible;
+      }
+    } else if (rowOrCol == "DIAGONAL") {
+      for (i = 0; i < this.pieces_.length; i++) {
         this.pieces_[this.pieces_.length - i - 1][i].visible =
           !this.pieces_[this.pieces_.length - i - 1][i].visible;
       }
-      break;*/
-    case MESSAGE_FIRST_ROW:
-      playerSprite.position.y = playerSprite.position.y - 20;
-      break;
-  }
-}
+    } else {
+        throw Error('Only Row, COL, DIAGONAL are allowed but received ' + rowOrCol);
+    }
+};
