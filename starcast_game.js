@@ -125,6 +125,10 @@ cast.games.starcast.StarcastGame = function(gameManager) {
  * @private
  */
 cast.games.starcast.StarcastGame.DIRECTION_FIELD_ = 'direction';
+cast.games.starcast.StarcastGame.CONTROLBUTTONS_FIELD_ = "controlButton";
+
+
+
 
 /**
  * constants
@@ -135,6 +139,8 @@ var MESSAGE_DOWN = "DOWN";
 var MESSAGE_LEFT = "LEFT";
 var MESSAGE_RIGHT = "RIGHT";
 var MESSAGE_DIAGONAL_FLIP = "FLIP";
+var MESSAGE_FIRST_ROW = "FIRSTROW";
+
 /**
  * Runs the game. Game should load if not loaded yet.
  * @param {function()} loadedCallback This function will be called when the game
@@ -487,9 +493,11 @@ cast.games.starcast.StarcastGame.prototype.onGameMessage_ = function(event) {
     throw Error('No player found for player ID ' + event.playerInfo.playerId);
   }
 
-  var directionField = event.requestExtraMessageData[cast.games.starcast.StarcastGame.DIRECTION_FIELD_];
-  this.onPlayerMessage_(player, directionField);
+  /*var directionField = event.requestExtraMessageData[cast.games.starcast.StarcastGame.DIRECTION_FIELD_];
+  this.onPlayerMessage_(player, directionField);*/
 
+  var buttonControlField = event.requestExtraMessageData[cast.games.starcast.StarcastGame.CONTROLBUTTONS_FIELD_];
+  this.onPlayerMessage_(player, buttonControlField);
  /* if(MESSAGE_DIAGONAL_FLIP){
     this.pieces_.visible = false;
   }*/
@@ -504,23 +512,23 @@ cast.games.starcast.StarcastGame.prototype.onGameMessage_ = function(event) {
  * @param {number} move Only used if fire parameter is true.
  * @private
  */
-cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ = function(player, direction) {
+cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ = function(player, buttonControl) {
 
   player.tint = Math.random() * 0xffffff;
-  console.log("onPlayerMessage" + direction);
+  console.log("onPlayerMessage" + buttonControl);
 
   var playerSprite = this.playerMap_[player.playerId];
   if (!playerSprite) {
     throw Error('No player sprite found for player ' + player.playerId);
   }
 
-  this.movePlayerSprite_(playerSprite, direction);
+  this.movePlayerSprite_(playerSprite, buttonControl);
 };
 
-cast.games.starcast.StarcastGame.prototype.movePlayerSprite_ = function(playerSprite, direction) {
+cast.games.starcast.StarcastGame.prototype.movePlayerSprite_ = function(playerSprite, buttonControl) {
   // TODO: Normalize sprite location
-  switch(direction) {
-    case MESSAGE_UP:
+  switch(buttonControl) {
+/*    case MESSAGE_UP:
       playerSprite.position.y = playerSprite.position.y - 5;
       break;
     case MESSAGE_DOWN:
@@ -537,6 +545,9 @@ cast.games.starcast.StarcastGame.prototype.movePlayerSprite_ = function(playerSp
         this.pieces_[this.pieces_.length - i - 1][i].visible =
           !this.pieces_[this.pieces_.length - i - 1][i].visible;
       }
+      break;*/
+    case MESSAGE_FIRST_ROW:
+      playerSprite.position.y = playerSprite.position.y - 20;
       break;
   }
 }
