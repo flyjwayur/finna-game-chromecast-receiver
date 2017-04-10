@@ -254,7 +254,7 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
   }
 
   //Make a position for the diagonal control button
-  diagonalControlButton.position.set(leftSideBottommostButton.x, bottomSideLeftmostButton.y);
+  diagonalControlButton.position.set(leftSideButtonsArray[0].x, bottomSideButtonsArray[0].y);
   container.addChild(diagonalControlButton);
 
   // flip random rows
@@ -280,8 +280,6 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
       flipPiece(this.pieces_[this.pieces_.length - i - 1][i]);
     }
   }
-
-  return this.pieces_;
 };
 
 function createLeftSideButtons(buttonsArray, row, totalRow, totalCol, pieceWidth, pieceHeight, container) {
@@ -325,8 +323,12 @@ function createSpriteFromSpriteSheet(width, height, row, col,
   piece.x = piece.x + (width * col * 2);
   piece.y = piece.y + (height * row * 2);
 
+  // boolean flag for solution checking
+  piece.flipped = false;
+
   // add piece to stage
   container.addChild(piece);
+
   return piece;
 }
 
@@ -335,8 +337,8 @@ function createSpriteFromSpriteSheet(width, height, row, col,
  * @private
  */
 cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
-  var totalPuzzleRows = 6;
-  var totalPuzzleColumns = 6;
+  this.totalPuzzleRows = 6;
+  this.totalPuzzleColumns = 6;
   this.backgroundSprite_ =
       PIXI.Sprite.fromImage('assets/background.jpg');
   this.backgroundSprite_.width = this.canvasWidth_;
@@ -345,7 +347,7 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
 
   this.diagonalControlButton_ = PIXI.Sprite.fromImage("assets/starControl_diagonal.png");
 
-  this.sprites_ = this.instantiatePuzzlePiecesAndControlButtons(192, 192, totalPuzzleRows, totalPuzzleColumns,
+  this.instantiatePuzzlePiecesAndControlButtons(192, 192, this.totalPuzzleRows, this.totalPuzzleColumns,
   this.container_, this.loader_.resources["assets/controlButtons.json"].textures, this.diagonalControlButton_);
 
   for (var i = 0; i < this.MAX_PLAYERS_; i++) {
@@ -508,7 +510,7 @@ cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ = function(player, r
 };
 
 cast.games.starcast.StarcastGame.prototype.flipPieces = function(playerSprite, rowOrCol, numRowOrCol) {
-    if (rowOrCol == "ROW") {
+  if (rowOrCol == "ROW") {
       for (var i = 0; i < this.pieces_.length; i++) {
         flipPieceTween(this.pieces_[numRowOrCol][i]);
       }
@@ -523,9 +525,33 @@ cast.games.starcast.StarcastGame.prototype.flipPieces = function(playerSprite, r
     } else {
         throw Error('Only Row, COL, DIAGONAL are allowed but received ' + rowOrCol);
     }
+    if (this.checkPuzzleIsSolved()){
+      this.displayCongratMessage();
+      this.backgroundSprite_.visible = false;
+    }
+};
+
+cast.games.starcast.StarcastGame.prototype.checkPuzzleIsSolved = function() {
+  for (var i = 0; i < this.pieces_.length; i++) {
+    for (var j = 0; j < this.pieces_.length; j++) {
+      if (this.pieces_[i][j].flipped)
+        return false;
+    }
+  }
+  return true;
+};
+
+cast.games.starcast.StarcastGame.prototype.displayCongratMessage = function () {
+  var message = new PIXI.Text(
+    "Congratulation!!",
+    {fontFamily: "Arial", fontSize: 100, fill: "white"}
+  );
+  message.position.set( this.canvasWidth_ / 4, this.canvasHeight_ / 2);
+  this.container_.addChild(message);
 };
 
 function flipPieceTween(piece) {
+  piece.flipped = !piece.flipped;
   if (piece.scale.x == 0) {
     createjs.Tween.get(piece.scale).to({ x: 2}, 500);
   } else {
@@ -534,10 +560,10 @@ function flipPieceTween(piece) {
 }
 
 function flipPiece(piece) {
+  piece.flipped = !piece.flipped;
   if (piece.scale.x == 0) {
     piece.scale.x = 2;
   } else {
     piece.scale.x = 0;
   }
 }
-
