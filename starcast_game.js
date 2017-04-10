@@ -226,17 +226,15 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
       pieceHeight = imageHeight/totalRow;
 
   var leftSideButtonsArray = [];
-  var leftSideBottommostButton = new PIXI.Sprite(buttonTextureId["greenButton.png"]);
   leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["greenButton.png"]));
   leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["blueButton.png"]));
   leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["yellowButton.png"]));
   leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["redButton.png"]));
   leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["purpleButton.png"]));
-  leftSideButtonsArray.push(leftSideBottommostButton);
+  leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["greenButton.png"]));
 
   var bottomSideButtonsArray = [];
-  var bottomSideLeftmostButton = new PIXI.Sprite(buttonTextureId["greenButton.png"]);
-  bottomSideButtonsArray.push(bottomSideLeftmostButton);
+  bottomSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["greenButton.png"]));
   bottomSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["blueButton.png"]));
   bottomSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["yellowButton.png"]));
   bottomSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["redButton.png"]));
@@ -263,7 +261,7 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
   for (row = 0; row  < totalRow; row++) {
     if (Math.random() < 0.5) {
       for (col = 0; col < totalCol; col++) {
-        this.pieces_[row][col].visible = !this.pieces_[row][col].visible;
+        flipPiece(this.pieces_[row][col]);
       }
     }
   }
@@ -271,7 +269,7 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
   for (col = 0; col  < totalCol; col++) {
     if (Math.random() < 0.5) {
       for (row = 0; row < totalRow; row++) {
-        this.pieces_[row][col].visible = !this.pieces_[row][col].visible;
+        flipPiece(this.pieces_[row][col]);
       }
     }
   }
@@ -279,13 +277,12 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
   // randomly flip diagonal or not
   if (Math.random() < 0.5) {
     for (var i  = 0; i  < totalCol; i++) {
-      this.pieces_[this.pieces_.length - i - 1][i].visible =
-        !this.pieces_[this.pieces_.length - i - 1][i].visible;
+      flipPiece(this.pieces_[this.pieces_.length - i - 1][i]);
     }
   }
 
   return this.pieces_;
-}
+};
 
 function createLeftSideButtons(buttonsArray, row, totalRow, totalCol, pieceWidth, pieceHeight, container) {
   var button = buttonsArray[row % buttonsArray.length];
@@ -338,6 +335,8 @@ function createSpriteFromSpriteSheet(width, height, row, col,
  * @private
  */
 cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
+  var totalPuzzleRows = 6;
+  var totalPuzzleColumns = 6;
   this.backgroundSprite_ =
       PIXI.Sprite.fromImage('assets/background.jpg');
   this.backgroundSprite_.width = this.canvasWidth_;
@@ -346,7 +345,7 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
 
   this.diagonalControlButton_ = PIXI.Sprite.fromImage("assets/starControl_diagonal.png");
 
-  this.sprites_ = this.instantiatePuzzlePiecesAndControlButtons(192, 192, 6, 6,
+  this.sprites_ = this.instantiatePuzzlePiecesAndControlButtons(192, 192, totalPuzzleRows, totalPuzzleColumns,
   this.container_, this.loader_.resources["assets/controlButtons.json"].textures, this.diagonalControlButton_);
 
   for (var i = 0; i < this.MAX_PLAYERS_; i++) {
@@ -511,20 +510,34 @@ cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ = function(player, r
 cast.games.starcast.StarcastGame.prototype.flipPieces = function(playerSprite, rowOrCol, numRowOrCol) {
     if (rowOrCol == "ROW") {
       for (var i = 0; i < this.pieces_.length; i++) {
-        this.pieces_[numRowOrCol][i].visible =
-          !this.pieces_[numRowOrCol][i].visible;
+        flipPieceTween(this.pieces_[numRowOrCol][i]);
       }
     } else if (rowOrCol == "COL") {
       for (i = 0; i < this.pieces_.length; i++) {
-        this.pieces_[i][numRowOrCol].visible =
-          !this.pieces_[i][numRowOrCol].visible;
+        flipPieceTween(this.pieces_[i][numRowOrCol]);
       }
     } else if (rowOrCol == "DIAGONAL") {
       for (i = 0; i < this.pieces_.length; i++) {
-        this.pieces_[this.pieces_.length - i - 1][i].visible =
-          !this.pieces_[this.pieces_.length - i - 1][i].visible;
+        flipPieceTween(this.pieces_[this.pieces_.length - i - 1][i]);
       }
     } else {
         throw Error('Only Row, COL, DIAGONAL are allowed but received ' + rowOrCol);
     }
 };
+
+function flipPieceTween(piece) {
+  if (piece.scale.x == 0) {
+    createjs.Tween.get(piece.scale).to({ x: 2}, 500);
+  } else {
+    createjs.Tween.get(piece.scale).to({ x: 0}, 500);
+  }
+}
+
+function flipPiece(piece) {
+  if (piece.scale.x == 0) {
+    piece.scale.x = 2;
+  } else {
+    piece.scale.x = 0;
+  }
+}
+

@@ -27,6 +27,7 @@ loadScriptsNoCache([
   // Make sure cast receiver SDK is loaded before games receiver SDK.
   'https://www.gstatic.com/cast/sdk/libs/receiver/2.0.0/cast_receiver.js',
   'https://www.gstatic.com/cast/sdk/libs/games/1.0.0/cast_games_receiver.js',
+  "https://code.createjs.com/tweenjs-0.6.2.min.js",
   'starcast_game.js',
   'starcast_main.js'
 ]);
