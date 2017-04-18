@@ -345,8 +345,10 @@ cast.games.starcast.StarcastGame.prototype.imageOnLoad = function (base_image) {
   var container = this.container_;
   return function (event) {
     console.log(event.target);
+    var rectangle = new PIXI.Rectangle(100,100,100,100);
     var base = new PIXI.BaseTexture(base_image);
     var texture = new PIXI.Texture(base);
+    texture.frame = rectangle;
     finnaSprite = new PIXI.Sprite(texture);
     container.addChild(finnaSprite);
   };
