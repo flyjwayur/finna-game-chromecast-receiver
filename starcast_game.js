@@ -12,7 +12,7 @@
  */
 cast.games = {};
 cast.games.starcast = {};
-cast.games.starcast.StarcastGame = function(gameManager) {
+cast.games.starcast.StarcastGame = function (gameManager) {
   /** @private {!cast.receiver.games.GameManager} */
   this.gameManager_ = gameManager;
 
@@ -49,7 +49,7 @@ cast.games.starcast.StarcastGame = function(gameManager) {
 
   /** @private {string} */
   this.MESSAGES_ERROR_ =
-      'Error message: ';
+    'Error message: ';
 
   /** @private {!Array.<!PIXI.Sprite>} All player sprites. */
   this.players_ = [];
@@ -86,11 +86,11 @@ cast.games.starcast.StarcastGame = function(gameManager) {
 
   /** @private {!PIXI.WebGLRenderer} */
   this.renderer_ = new PIXI.WebGLRenderer(this.canvasWidth_,
-      this.canvasHeight_);
+    this.canvasHeight_);
 
   /** @private {!PIXI.WebGLRenderer} */
   this.canvasrenderer_ = new PIXI.CanvasRenderer(this.canvasWidth_,
-        this.canvasHeight_);
+    this.canvasHeight_);
   this.canvasrenderer_.backgroundColor = 0x061639;
 
   /** @private {!PIXI.loaders.Loader} */
@@ -138,7 +138,7 @@ cast.games.starcast.StarcastGame.NUM_ROW_OR_COL_FIELD_ = "numRowOrCol";
  *     finishes loading or is already loaded and about to actually run.
  * @export
  */
-cast.games.starcast.StarcastGame.prototype.run = function(loadedCallback) {
+cast.games.starcast.StarcastGame.prototype.run = function (loadedCallback) {
   // If the game is already running, return immediately.
   if (this.isRunning_) {
     loadedCallback();
@@ -161,7 +161,7 @@ cast.games.starcast.StarcastGame.prototype.run = function(loadedCallback) {
  * Stops the game.
  * @export
  */
-cast.games.starcast.StarcastGame.prototype.stop = function() {
+cast.games.starcast.StarcastGame.prototype.stop = function () {
   if (this.loadedCallback_ || !this.isRunning_) {
     this.loadedCallback_ = null;
     return;
@@ -172,17 +172,17 @@ cast.games.starcast.StarcastGame.prototype.stop = function() {
   document.body.removeChild(this.canvasrenderer_.view);
 
   this.gameManager_.removeEventListener(
-      cast.receiver.games.EventType.GAME_MESSAGE_RECEIVED,
-      this.boundGameMessageCallback_);
+    cast.receiver.games.EventType.GAME_MESSAGE_RECEIVED,
+    this.boundGameMessageCallback_);
   this.gameManager_.removeEventListener(
-      cast.receiver.games.EventType.PLAYER_AVAILABLE,
-      this.boundPlayerAvailableCallback_);
+    cast.receiver.games.EventType.PLAYER_AVAILABLE,
+    this.boundPlayerAvailableCallback_);
   this.gameManager_.removeEventListener(
-      cast.receiver.games.EventType.PLAYER_QUIT,
-      this.boundPlayerQuitCallback_);
+    cast.receiver.games.EventType.PLAYER_QUIT,
+    this.boundPlayerQuitCallback_);
   this.gameManager_.removeEventListener(
-      cast.receiver.games.EventType.PLAYER_DROPPED,
-      this.boundPlayerQuitCallback_);
+    cast.receiver.games.EventType.PLAYER_DROPPED,
+    this.boundPlayerQuitCallback_);
 };
 
 
@@ -190,7 +190,7 @@ cast.games.starcast.StarcastGame.prototype.stop = function() {
  * Adds the renderer and run the game. Calls loaded callback passed to #run.
  * @private
  */
-cast.games.starcast.StarcastGame.prototype.start_ = function() {
+cast.games.starcast.StarcastGame.prototype.start_ = function () {
   // If callback is null, the game was stopped already.
   if (!this.loadedCallback_) {
     return;
@@ -200,7 +200,7 @@ cast.games.starcast.StarcastGame.prototype.start_ = function() {
   //document.body.appendChild(this.renderer_.view);
   this.isRunning_ = true;
   this.gameManager_.updateGameplayState(
-      cast.receiver.games.GameplayState.RUNNING, null);
+    cast.receiver.games.GameplayState.RUNNING, null);
 
   // Add any already connected players.
   var players = this.gameManager_.getPlayers();
@@ -214,23 +214,23 @@ cast.games.starcast.StarcastGame.prototype.start_ = function() {
   this.loadedCallback_ = null;
 
   this.gameManager_.addEventListener(
-      cast.receiver.games.EventType.GAME_MESSAGE_RECEIVED,
-      this.boundGameMessageCallback_);
+    cast.receiver.games.EventType.GAME_MESSAGE_RECEIVED,
+    this.boundGameMessageCallback_);
   this.gameManager_.addEventListener(
-      cast.receiver.games.EventType.PLAYER_AVAILABLE,
-      this.boundPlayerAvailableCallback_);
+    cast.receiver.games.EventType.PLAYER_AVAILABLE,
+    this.boundPlayerAvailableCallback_);
   this.gameManager_.addEventListener(
-      cast.receiver.games.EventType.PLAYER_QUIT,
-      this.boundPlayerQuitCallback_);
+    cast.receiver.games.EventType.PLAYER_QUIT,
+    this.boundPlayerQuitCallback_);
   this.gameManager_.addEventListener(
-      cast.receiver.games.EventType.PLAYER_DROPPED,
-      this.boundPlayerQuitCallback_);
+    cast.receiver.games.EventType.PLAYER_DROPPED,
+    this.boundPlayerQuitCallback_);
 };
 
-cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButtons = function(imageWidth, imageHeight, totalRow, totalCol,
-                                                  container, buttonTextureId, diagonalControlButton){
-  var pieceWidth = imageWidth/totalCol,
-      pieceHeight = imageHeight/totalRow;
+cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButtons = function (imageWidth, imageHeight, totalRow, totalCol,
+                                                                                                container, buttonTextureId, diagonalControlButton) {
+  var pieceWidth = imageWidth / totalCol,
+    pieceHeight = imageHeight / totalRow;
 
   var leftSideButtonsArray = [];
   leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["greenButton.png"]));
@@ -248,7 +248,7 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
   bottomSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["purpleButton.png"]));
   bottomSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["greenButton.png"]));
 
-  for (var row = 0; row  < totalRow; row++) {
+  for (var row = 0; row < totalRow; row++) {
     this.pieces_.push([]);
     createLeftSideButtons(leftSideButtonsArray, row, totalRow, totalCol, pieceWidth, pieceHeight, container);
     for (var col = 0; col < totalCol; col++) {
@@ -265,7 +265,7 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
   container.addChild(diagonalControlButton);
 
   // flip random rows
-  for (row = 0; row  < totalRow; row++) {
+  for (row = 0; row < totalRow; row++) {
     if (Math.random() < 0.5) {
       for (col = 0; col < totalCol; col++) {
         flipPiece(this.pieces_[row][col]);
@@ -273,7 +273,7 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
     }
   }
   // flip random cols
-  for (col = 0; col  < totalCol; col++) {
+  for (col = 0; col < totalCol; col++) {
     if (Math.random() < 0.5) {
       for (row = 0; row < totalRow; row++) {
         flipPiece(this.pieces_[row][col]);
@@ -283,7 +283,7 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
 
   // randomly flip diagonal or not
   if (Math.random() < 0.5) {
-    for (var i  = 0; i  < totalCol; i++) {
+    for (var i = 0; i < totalCol; i++) {
       flipPiece(this.pieces_[this.pieces_.length - i - 1][i]);
     }
   }
@@ -339,35 +339,37 @@ function createSpriteFromSpriteSheet(width, height, row, col,
   return piece;
 }
 
+cast.games.starcast.StarcastGame.prototype.imageOnLoad = function (base_image) {
+  this.finnaSprite = null;
+  var finnaSprite = this.finnaSprite;
+  var container = this.container_;
+  return function (event) {
+    console.log(event.target);
+    var base = new PIXI.BaseTexture(base_image);
+    var texture = new PIXI.Texture(base);
+    finnaSprite = new PIXI.Sprite(texture);
+    container.addChild(finnaSprite);
+  };
+};
 /**
  * Called when all assets are loaded.
  * @private
  */
-cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
+cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function () {
   this.totalPuzzleRows = 6;
   this.totalPuzzleColumns = 6;
   this.backgroundSprite_ =
-      PIXI.Sprite.fromImage('assets/background.jpg');
+    PIXI.Sprite.fromImage('assets/background.jpg');
   this.backgroundSprite_.width = this.canvasWidth_;
   this.backgroundSprite_.height = this.canvasHeight_;
   this.container_.addChild(this.backgroundSprite_);
 
   this.diagonalControlButton_ = PIXI.Sprite.fromImage("assets/starControl_diagonal.png");
 
-    this.finnaSprite;
-    var testURL = "https://api.finna.fi/Cover/Show?id=muusa.urn%3Auuid%3A7682B120-4F8E-4210-AD4D-1B118BA7699E&index=0&size=large";
-    let base_image = new Image();
-    base_image.addEventListener("load", imageOnLoad);
-    base_image.src = testURL;
-
-    function imageOnLoad(event){
-        console.log(event.target);
-        var base = new PIXI.BaseTexture(base_image);
-        var texture = new PIXI.Texture(base);
-        this.finnaSprite = new PIXI.Sprite(texture);
-        this.container_.addChild(this.finnaSprite);
-    }
-
+  var testURL = "https://api.finna.fi/Cover/Show?id=muusa.urn%3Auuid%3A7682B120-4F8E-4210-AD4D-1B118BA7699E&index=0&size=large";
+  var base_image = new Image();
+  base_image.addEventListener("load", this.imageOnLoad(base_image));
+  base_image.src = testURL;
 
   for (var i = 0; i < this.MAX_PLAYERS_; i++) {
     var player = PIXI.Sprite.fromImage('assets/player.png');
@@ -391,7 +393,7 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
  * @param {number} timestamp
  * @private
  */
-cast.games.starcast.StarcastGame.prototype.update_ = function(timestamp) {
+cast.games.starcast.StarcastGame.prototype.update_ = function (timestamp) {
   if (!this.isRunning_) {
     return;
   }
@@ -408,20 +410,20 @@ cast.games.starcast.StarcastGame.prototype.update_ = function(timestamp) {
  * @private
  */
 cast.games.starcast.StarcastGame.prototype.onPlayerAvailable_ =
-    function(event) {
-  if (event.statusCode != cast.receiver.games.StatusCode.SUCCESS) {
-    console.log('Error: Event status code: ' + event.statusCode);
-    console.log('Reason for error: ' + event.errorDescription);
-    return;
-  }
+  function (event) {
+    if (event.statusCode != cast.receiver.games.StatusCode.SUCCESS) {
+      console.log('Error: Event status code: ' + event.statusCode);
+      console.log('Reason for error: ' + event.errorDescription);
+      return;
+    }
 
-  var playerId = /** @type {string} */ (event.playerInfo.playerId);
-  // Automatically transition available players to playing state.
-  this.gameManager_.updatePlayerState(playerId,
+    var playerId = /** @type {string} */ (event.playerInfo.playerId);
+    // Automatically transition available players to playing state.
+    this.gameManager_.updatePlayerState(playerId,
       cast.receiver.games.PlayerState.PLAYING, null);
 
-  this.addPlayer_(playerId);
-};
+    this.addPlayer_(playerId);
+  };
 
 
 /**
@@ -429,7 +431,7 @@ cast.games.starcast.StarcastGame.prototype.onPlayerAvailable_ =
  * @param {string} playerId
  * @private
  */
-cast.games.starcast.StarcastGame.prototype.addPlayer_ = function(playerId) {
+cast.games.starcast.StarcastGame.prototype.addPlayer_ = function (playerId) {
   // Check if player is already on the screen.
   var playerSprite = this.playerMap_[playerId];
   if (playerSprite && playerSprite.visible) {
@@ -456,34 +458,34 @@ cast.games.starcast.StarcastGame.prototype.addPlayer_ = function(playerId) {
  * @private
  */
 cast.games.starcast.StarcastGame.prototype.onPlayerQuit_ =
-    function(event) {
-  if (event.statusCode != cast.receiver.games.StatusCode.SUCCESS) {
-    console.log('Error: Event status code: ' + event.statusCode);
-    console.log('Reason for error: ' + event.errorDescription);
-    return;
-  }
+  function (event) {
+    if (event.statusCode != cast.receiver.games.StatusCode.SUCCESS) {
+      console.log('Error: Event status code: ' + event.statusCode);
+      console.log('Reason for error: ' + event.errorDescription);
+      return;
+    }
 
-  var playerSprite = this.playerMap_[event.playerInfo.playerId];
-  if (playerSprite) {
-    playerSprite.visible = false;
-  }
-  delete this.playerMap_[event.playerInfo.playerId];
+    var playerSprite = this.playerMap_[event.playerInfo.playerId];
+    if (playerSprite) {
+      playerSprite.visible = false;
+    }
+    delete this.playerMap_[event.playerInfo.playerId];
 
-  // Tear down the game if there are no more players. Might want to show a nice
-  // UI with a countdown instead of tearing down instantly.
-  var connectedPlayers = this.gameManager_.getConnectedPlayers();
-  if (connectedPlayers.length == 0) {
-    console.log('No more players connected. Tearing down game.');
-    cast.receiver.CastReceiverManager.getInstance().stop();
-  }
-};
+    // Tear down the game if there are no more players. Might want to show a nice
+    // UI with a countdown instead of tearing down instantly.
+    var connectedPlayers = this.gameManager_.getConnectedPlayers();
+    if (connectedPlayers.length == 0) {
+      console.log('No more players connected. Tearing down game.');
+      cast.receiver.CastReceiverManager.getInstance().stop();
+    }
+  };
 
 /**
  * Handles incoming messages.
  * @param {cast.receiver.games.Event} event
  * @private
  */
-cast.games.starcast.StarcastGame.prototype.onGameMessage_ = function(event) {
+cast.games.starcast.StarcastGame.prototype.onGameMessage_ = function (event) {
 
   console.log(event);
   console.log(event.requestExtraMessageData);
@@ -496,7 +498,7 @@ cast.games.starcast.StarcastGame.prototype.onGameMessage_ = function(event) {
   }
 
   var player =
-      this.gameManager_.getPlayer(event.playerInfo.playerId);
+    this.gameManager_.getPlayer(event.playerInfo.playerId);
   if (!player) {
     throw Error('No player found for player ID ' + event.playerInfo.playerId);
   }
@@ -516,7 +518,7 @@ cast.games.starcast.StarcastGame.prototype.onGameMessage_ = function(event) {
  * @param {number} move Only used if fire parameter is true.
  * @private
  */
-cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ = function(player, rowOrCol, numRowOrCol) {
+cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ = function (player, rowOrCol, numRowOrCol) {
 
   player.tint = Math.random() * 0xffffff;
   console.log("onPlayerMessage" + rowOrCol + ", " + numRowOrCol);
@@ -529,29 +531,29 @@ cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ = function(player, r
   this.flipPieces(playerSprite, rowOrCol, numRowOrCol);
 };
 
-cast.games.starcast.StarcastGame.prototype.flipPieces = function(playerSprite, rowOrCol, numRowOrCol) {
+cast.games.starcast.StarcastGame.prototype.flipPieces = function (playerSprite, rowOrCol, numRowOrCol) {
   if (rowOrCol == "ROW") {
-      for (var i = 0; i < this.pieces_.length; i++) {
-        flipPieceTween(this.pieces_[numRowOrCol][i]);
-      }
-    } else if (rowOrCol == "COL") {
-      for (i = 0; i < this.pieces_.length; i++) {
-        flipPieceTween(this.pieces_[i][numRowOrCol]);
-      }
-    } else if (rowOrCol == "DIAGONAL") {
-      for (i = 0; i < this.pieces_.length; i++) {
-        flipPieceTween(this.pieces_[this.pieces_.length - i - 1][i]);
-      }
-    } else {
-        throw Error('Only Row, COL, DIAGONAL are allowed but received ' + rowOrCol);
+    for (var i = 0; i < this.pieces_.length; i++) {
+      flipPieceTween(this.pieces_[numRowOrCol][i]);
     }
-    if (this.checkPuzzleIsSolved()){
-      this.displayCongratMessage();
-      this.backgroundSprite_.visible = false;
+  } else if (rowOrCol == "COL") {
+    for (i = 0; i < this.pieces_.length; i++) {
+      flipPieceTween(this.pieces_[i][numRowOrCol]);
     }
+  } else if (rowOrCol == "DIAGONAL") {
+    for (i = 0; i < this.pieces_.length; i++) {
+      flipPieceTween(this.pieces_[this.pieces_.length - i - 1][i]);
+    }
+  } else {
+    throw Error('Only Row, COL, DIAGONAL are allowed but received ' + rowOrCol);
+  }
+  if (this.checkPuzzleIsSolved()) {
+    this.displayCongratMessage();
+    this.backgroundSprite_.visible = false;
+  }
 };
 
-cast.games.starcast.StarcastGame.prototype.checkPuzzleIsSolved = function() {
+cast.games.starcast.StarcastGame.prototype.checkPuzzleIsSolved = function () {
   for (var i = 0; i < this.pieces_.length; i++) {
     for (var j = 0; j < this.pieces_.length; j++) {
       if (this.pieces_[i][j].flipped)
@@ -566,16 +568,16 @@ cast.games.starcast.StarcastGame.prototype.displayCongratMessage = function () {
     "Congratulation!!",
     {fontFamily: "Arial", fontSize: 100, fill: "white"}
   );
-  message.position.set( this.canvasWidth_ / 4, this.canvasHeight_ / 2);
+  message.position.set(this.canvasWidth_ / 4, this.canvasHeight_ / 2);
   this.container_.addChild(message);
 };
 
 function flipPieceTween(piece) {
   piece.flipped = !piece.flipped;
   if (piece.scale.x == 0) {
-    createjs.Tween.get(piece.scale).to({ x: 2}, 500);
+    createjs.Tween.get(piece.scale).to({x: 2}, 500);
   } else {
-    createjs.Tween.get(piece.scale).to({ x: 0}, 500);
+    createjs.Tween.get(piece.scale).to({x: 0}, 500);
   }
 }
 
