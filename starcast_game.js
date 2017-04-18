@@ -340,6 +340,28 @@ function createSpriteFromSpriteSheet(width, height, row, col,
 }
 
 /**
+ *
+ * Loading cropped sprite as a rectangle frame for finna API image
+ *
+ **/
+
+cast.games.starcast.StarcastGame.prototype.imageOnLoad = function (base_image) {
+    this.finnaSprite = null;
+    var finnaSprite = this.finnaSprite;
+    var container = this.container_;
+    return function (event) {
+        console.log(event.target);
+        var rectangle = new PIXI.Rectangle(100,100,100,100);
+        var base = new PIXI.BaseTexture(base_image);
+        var texture = new PIXI.Texture(base);
+        texture.frame = rectangle;
+        finnaSprite = new PIXI.Sprite(texture);
+        container.addChild(finnaSprite);
+    };
+};
+
+
+/**
  * Called when all assets are loaded.
  * @private
  */
@@ -353,6 +375,12 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
   this.container_.addChild(this.backgroundSprite_);
 
   this.diagonalControlButton_ = PIXI.Sprite.fromImage("assets/starControl_diagonal.png");
+
+  //Get Architecture images from Fingna API
+  var testURL = "https://api.finna.fi/Cover/Show?id=muusa.urn%3Auuid%3A7682B120-4F8E-4210-AD4D-1B118BA7699E&index=0&size=large";
+  var base_image = new Image();
+  base_image.addEventListener("load", this.imageOnLoad(base_image));
+  base_image.src = testURL;
 
   this.instantiatePuzzlePiecesAndControlButtons(192, 192, this.totalPuzzleRows, this.totalPuzzleColumns,
   this.container_, this.loader_.resources["assets/controlButtons.json"].textures, this.diagonalControlButton_);
