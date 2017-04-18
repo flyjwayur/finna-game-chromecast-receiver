@@ -354,8 +354,20 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
 
   this.diagonalControlButton_ = PIXI.Sprite.fromImage("assets/starControl_diagonal.png");
 
-  this.instantiatePuzzlePiecesAndControlButtons(192, 192, this.totalPuzzleRows, this.totalPuzzleColumns,
-  this.container_, this.loader_.resources["assets/controlButtons.json"].textures, this.diagonalControlButton_);
+    this.finnaSprite;
+    var testURL = "https://api.finna.fi/Cover/Show?id=muusa.urn%3Auuid%3A7682B120-4F8E-4210-AD4D-1B118BA7699E&index=0&size=large";
+    let base_image = new Image();
+    base_image.addEventListener("load", imageOnLoad);
+    base_image.src = testURL;
+
+    function imageOnLoad(event){
+        console.log(event.target);
+        var base = new PIXI.BaseTexture(base_image);
+        var texture = new PIXI.Texture(base);
+        this.finnaSprite = new PIXI.Sprite(texture);
+        this.container_.addChild(this.finnaSprite);
+    }
+
 
   for (var i = 0; i < this.MAX_PLAYERS_; i++) {
     var player = PIXI.Sprite.fromImage('assets/player.png');
