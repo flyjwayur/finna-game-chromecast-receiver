@@ -88,6 +88,11 @@ cast.games.starcast.StarcastGame = function(gameManager) {
   this.renderer_ = new PIXI.WebGLRenderer(this.canvasWidth_,
       this.canvasHeight_);
 
+  /** @private {!PIXI.WebGLRenderer} */
+  this.canvasrenderer_ = new PIXI.CanvasRenderer(this.canvasWidth_,
+        this.canvasHeight_);
+  this.canvasrenderer_.backgroundColor = 0x061639;
+
   /** @private {!PIXI.loaders.Loader} */
   this.loader_ = new PIXI.loaders.Loader();
   this.loader_.add('assets/tileset.png');
@@ -163,7 +168,8 @@ cast.games.starcast.StarcastGame.prototype.stop = function() {
   }
 
   this.isRunning_ = false;
-  document.body.removeChild(this.renderer_.view);
+  //document.body.removeChild(this.renderer_.view);
+  document.body.removeChild(this.canvasrenderer_.view);
 
   this.gameManager_.removeEventListener(
       cast.receiver.games.EventType.GAME_MESSAGE_RECEIVED,
@@ -190,7 +196,8 @@ cast.games.starcast.StarcastGame.prototype.start_ = function() {
     return;
   }
 
-  document.body.appendChild(this.renderer_.view);
+  document.body.appendChild(this.canvasrenderer_.view);
+  //document.body.appendChild(this.renderer_.view);
   this.isRunning_ = true;
   this.gameManager_.updateGameplayState(
       cast.receiver.games.GameplayState.RUNNING, null);
@@ -379,7 +386,8 @@ cast.games.starcast.StarcastGame.prototype.update_ = function(timestamp) {
 
   requestAnimationFrame(this.boundUpdateFunction_);
 
-  this.renderer_.render(this.container_);
+  this.canvasrenderer_.render(this.container_);
+  //this.renderer_.render(this.container_);
 };
 
 /**
