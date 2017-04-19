@@ -63,6 +63,9 @@ cast.games.starcast.StarcastGame = function(gameManager) {
   /** @private {!Array.<!PIXI.Sprite>} All pieces sprites. */
   this.pieces_ = [];
 
+  /** Count flip for the suggestion */
+  this.flipCount_ = 0;
+
   /** @private {!Uint32Array} Used for loop iterators in #update */
   this.loopIterator_ = new Uint32Array(2);
 
@@ -253,7 +256,7 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
     createLeftSideButtons(leftSideButtonsArray, row, totalRow, totalCol, pieceWidth, pieceHeight, container);
     for (var col = 0; col < totalCol; col++) {
       this.pieces_[row].push(
-        createSpriteFromSpriteSheet(pieceWidth, pieceHeight, row, col,
+        this.createSpriteFromSpriteSheet(pieceWidth, pieceHeight, row, col,
           totalRow, totalCol, container)
       );
       createBottomSideButtons(bottomSideButtonsArray, col, totalRow, totalCol, pieceWidth, pieceHeight, container);
@@ -264,12 +267,14 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
   diagonalControlButton.position.set(leftSideButtonsArray[0].x, bottomSideButtonsArray[0].y);
   container.addChild(diagonalControlButton);
 
+
   // flip random rows
   for (row = 0; row  < totalRow; row++) {
     if (Math.random() < 0.5) {
       for (col = 0; col < totalCol; col++) {
         flipPiece(this.pieces_[row][col]);
       }
+      this.flipCount_++;
     }
   }
   // flip random cols
@@ -278,6 +283,7 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
       for (row = 0; row < totalRow; row++) {
         flipPiece(this.pieces_[row][col]);
       }
+      this.flipCount_++;
     }
   }
 
@@ -286,7 +292,10 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
     for (var i  = 0; i  < totalCol; i++) {
       flipPiece(this.pieces_[this.pieces_.length - i - 1][i]);
     }
+    this.flipCount_++;
   }
+
+  this.displayFlipSuggestionMessage();
 };
 
 function createLeftSideButtons(buttonsArray, row, totalRow, totalCol, pieceWidth, pieceHeight, container) {
@@ -309,13 +318,17 @@ function createBottomSideButtons(buttonsArray, col, totalRow, totalCol, pieceWid
   container.addChild(button);
 }
 
-function createSpriteFromSpriteSheet(width, height, row, col,
+cast.games.starcast.StarcastGame.prototype.createSpriteFromSpriteSheet = function(width, height, row, col,
                                      totalRow, totalCol, container) {
   var rectangle = new PIXI.Rectangle(width * col, height * row, width, height);
   //Tell the texture to use that rectangular section
-  var texture = new PIXI.Texture(PIXI.BaseTexture.fromImage("assets/tileset.png"));
+  // var texture = new PIXI.Texture(PIXI.BaseTexture.fromImage("assets/tileset.png"));
+  //var base = this.base;
+  var texture = new PIXI.Texture(this.base);
   texture.frame = rectangle;
   var piece = new PIXI.Sprite(texture);
+  piece.width = 32;
+  piece.height = 32;
 
   // Center all pieces
   piece.x = container.width / 2 - piece.width / 2 - (width * totalCol);
@@ -345,18 +358,11 @@ function createSpriteFromSpriteSheet(width, height, row, col,
  *
  **/
 
+
 cast.games.starcast.StarcastGame.prototype.imageOnLoad = function (base_image) {
-    this.finnaSprite = null;
-    var finnaSprite = this.finnaSprite;
-    var container = this.container_;
     return function (event) {
         console.log(event.target);
-        var rectangle = new PIXI.Rectangle(100,100,100,100);
-        var base = new PIXI.BaseTexture(base_image);
-        var texture = new PIXI.Texture(base);
-        texture.frame = rectangle;
-        finnaSprite = new PIXI.Sprite(texture);
-        container.addChild(finnaSprite);
+        this.base = new PIXI.BaseTexture(base_image);
     };
 };
 
@@ -577,6 +583,24 @@ cast.games.starcast.StarcastGame.prototype.checkPuzzleIsSolved = function() {
   return true;
 };
 
+
+/*
+ *
+ * Display ideally how many times user can flip to solve the puzzle as a hint
+ *
+ */
+
+cast.games.starcast.StarcastGame.prototype.displayFlipSuggestionMessage = function () {
+    var message = new PIXI.Text(
+        "If you can find the solution with a less flip, there will be more points\n" +
+        "Hint! Try to flip as few as these flips :D :" + this.flipCount_,
+        {fontFamily: "Arial", fontSize: 30, fill: "yellow"}
+    );
+    message.position.set( this.canvasWidth_ / 4, this.canvasHeight_ / 2);
+    this.container_.addChild(message);
+};
+
+
 cast.games.starcast.StarcastGame.prototype.displayCongratMessage = function () {
   var message = new PIXI.Text(
     "Congratulation!!",
@@ -603,3 +627,5 @@ function flipPiece(piece) {
     piece.scale.x = 0;
   }
 }
+
+
