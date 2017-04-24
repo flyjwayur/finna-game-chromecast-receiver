@@ -67,7 +67,9 @@ cast.games.starcast.StarcastGame = function(gameManager) {
   this.pieces_ = [];
 
   /** Count flip for the suggestion */
-  this.flipCount_ = 0;
+  this.suggestedFlipCount_ = 0;
+
+  this.playerTotalFlipCount_ = 0;
 
   /** @private {!Uint32Array} Used for loop iterators in #update */
   this.loopIterator_ = new Uint32Array(2);
@@ -277,7 +279,7 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
       for (col = 0; col < totalCol; col++) {
         flipPiece(this.pieces_[row][col]);
       }
-      this.flipCount_++;
+      this.suggestedFlipCount_++;
     }
   }
   // flip random cols
@@ -286,7 +288,7 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
       for (row = 0; row < totalRow; row++) {
         flipPiece(this.pieces_[row][col]);
       }
-      this.flipCount_++;
+      this.suggestedFlipCount_++;
     }
   }
 
@@ -295,7 +297,7 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
     for (var i  = 0; i  < totalCol; i++) {
       flipPiece(this.pieces_[this.pieces_.length - i - 1][i]);
     }
-    this.flipCount_++;
+    this.suggestedFlipCount_++;
   }
 
   this.displayFlipSuggestionMessage();
@@ -551,24 +553,40 @@ cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ = function(player, r
 
 cast.games.starcast.StarcastGame.prototype.flipPieces = function(playerSprite, rowOrCol, numRowOrCol) {
   if (rowOrCol == "ROW") {
+      this.playerTotalFlipCount_++;
       for (var i = 0; i < this.pieces_.length; i++) {
         flipPieceTween(this.pieces_[numRowOrCol][i]);
       }
     } else if (rowOrCol == "COL") {
+      this.playerTotalFlipCount_++;
       for (i = 0; i < this.pieces_.length; i++) {
         flipPieceTween(this.pieces_[i][numRowOrCol]);
       }
     } else if (rowOrCol == "DIAGONAL") {
+      this.playerTotalFlipCount_++;
       for (i = 0; i < this.pieces_.length; i++) {
         flipPieceTween(this.pieces_[this.pieces_.length - i - 1][i]);
       }
     } else {
         throw Error('Only Row, COL, DIAGONAL are allowed but received ' + rowOrCol);
     }
+
+    //Display the actual number of flips from a player on the scrren
+    this.displayCountflipsFromPlayerMessage();
+
     if (this.checkPuzzleIsSolved()){
       this.displayCongratMessage();
       this.backgroundSprite_.visible = false;
     }
+};
+
+cast.games.starcast.StarcastGame.prototype.displayCountflipsFromPlayerMessage = function () {
+    var message = new PIXI.Text(
+        "The Player flips : " + this.playerTotalFlipCount_ + " times",
+        {fontFamily: "Arial", fontSize: 30, fill: "green"}
+    );
+    message.position.set( this.canvasWidth_ / 4, this.canvasHeight_ / 2 - 100);
+    this.container_.addChild(message);
 };
 
 cast.games.starcast.StarcastGame.prototype.checkPuzzleIsSolved = function() {
@@ -591,7 +609,7 @@ cast.games.starcast.StarcastGame.prototype.checkPuzzleIsSolved = function() {
 cast.games.starcast.StarcastGame.prototype.displayFlipSuggestionMessage = function () {
     var message = new PIXI.Text(
         "If you can find the solution with a less flip, there will be more points\n" +
-        "Hint! Try to flip as few as these flips :D :" + this.flipCount_,
+        "Hint! Try to flip as few as these flips :D :" + this.suggestedFlipCount_,
         {fontFamily: "Arial", fontSize: 30, fill: "yellow"}
     );
     message.position.set( this.canvasWidth_ / 4, this.canvasHeight_ / 2);
