@@ -564,19 +564,22 @@ cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ = function(player, r
 cast.games.starcast.StarcastGame.prototype.flipPieces = function(playerSprite, rowOrCol, numRowOrCol) {
   if (rowOrCol == "ROW") {
       this.playerEachFlipCount_++;
-      this.givenPoints_ -=1;
+      // this.givenPoints_ -=1;
+      // this.finalPoints_ = this.givenPoints_;
       for (var i = 0; i < this.pieces_.length; i++) {
         flipPieceTween(this.pieces_[numRowOrCol][i]);
       }
     } else if (rowOrCol == "COL") {
       this.playerEachFlipCount_++;
-      this.givenPoints_ -=1;
+      // this.givenPoints_ -=1;
+      // this.finalPoints_ = this.givenPoints_;
       for (i = 0; i < this.pieces_.length; i++) {
         flipPieceTween(this.pieces_[i][numRowOrCol]);
       }
     } else if (rowOrCol == "DIAGONAL") {
       this.playerEachFlipCount_++;
-      this.givenPoints_ -=1;
+      // this.givenPoints_ -=1;
+      // this.finalPoints_ = this.givenPoints_;
       for (i = 0; i < this.pieces_.length; i++) {
         flipPieceTween(this.pieces_[this.pieces_.length - i - 1][i]);
       }
@@ -589,7 +592,14 @@ cast.games.starcast.StarcastGame.prototype.flipPieces = function(playerSprite, r
       this.displayCongratMessage();
       //this.calculatePlayerPointsInEachRound(this.playerEachFlipCount_);
       //Display the actual number of flips from a player on the screen
-      this.displayCountflipsFromPlayerMessage();
+      if(this.playerEachFlipCount_ == this.suggestedFlipCount_){
+        this.finalPoints_ = + 10;
+        this.displayCountflipsFromPlayerMessage();
+      }else if(this.playerEachFlipCount_ > this.suggestedFlipCount_){
+        this.finalPoints_ = this.givenPoints_ - (this.playerEachFlipCount_ > this.suggestedFlipCount_);
+        this.displayCountflipsFromPlayerMessage();
+      }
+
       this.backgroundSprite_.visible = false;
     }
 };
@@ -597,7 +607,8 @@ cast.games.starcast.StarcastGame.prototype.flipPieces = function(playerSprite, r
 cast.games.starcast.StarcastGame.prototype.checkFlipsFromPlayerMessage = function () {
     var message = new PIXI.Text(
         "The Player each flips : " + this.playerEachFlipCount_ + " times\n" +
-        "The Player final flips : " + this.givenPoints_ + " times",
+        "The Player final points from givenPoints : " + this.givenPoints_ + " points\n"+
+        "The Player final points : " + this.finalPoints_ + " points",
         {fontFamily: "Arial", fontSize: 30, fill: "green"}
     );
     message.position.set( this.canvasWidth_ / 4, this.canvasHeight_ / 2 - 100);
@@ -606,11 +617,12 @@ cast.games.starcast.StarcastGame.prototype.checkFlipsFromPlayerMessage = functio
 
 cast.games.starcast.StarcastGame.prototype.displayCountflipsFromPlayerMessage = function () {
     var message = new PIXI.Text(
-        "The Player total flips : " + this.playerEachFlipCount_ + " times\n" +
-        "The Player final points : " + this.givenPoints_ + " points",
+        "The Player each flips : " + this.playerEachFlipCount_ + " times\n" +
+        "The Player final points from givenPoints : " + this.givenPoints_ + " points\n"+
+        "The Player final points : " + this.finalPoints_ + " points",
         {fontFamily: "Arial", fontSize: 30, fill: "yellow"}
     );
-    message.position.set( this.canvasWidth_ / 4, this.canvasHeight_ / 2 - 50);
+    message.position.set( this.canvasWidth_ / 4, this.canvasHeight_ / 2 - 130);
     this.container_.addChild(message);
 };
 
