@@ -60,6 +60,9 @@ cast.games.starcast.StarcastGame = function(gameManager) {
    */
   this.playerMap_ = {};
 
+  /** @private an image from Finna API. */
+  this.apiImage_ = null;
+
   /** @private {!Array.<!PIXI.Sprite>} All pieces sprites. */
   this.pieces_ = [];
 
@@ -323,8 +326,8 @@ cast.games.starcast.StarcastGame.prototype.createSpriteFromSpriteSheet = functio
   var rectangle = new PIXI.Rectangle(width * col, height * row, width, height);
   //Tell the texture to use that rectangular section
   // var texture = new PIXI.Texture(PIXI.BaseTexture.fromImage("assets/tileset.png"));
-  //var base = this.base;
-  var texture = new PIXI.Texture(this.base);
+  var base = new PIXI.BaseTexture(this.apiImage_),
+      texture = new PIXI.Texture(base);
   texture.frame = rectangle;
   var piece = new PIXI.Sprite(texture);
   piece.width = 32;
@@ -359,11 +362,9 @@ cast.games.starcast.StarcastGame.prototype.createSpriteFromSpriteSheet = functio
  **/
 
 
-cast.games.starcast.StarcastGame.prototype.imageOnLoad = function (base_image) {
-    return function (event) {
-        console.log(event.target);
-        this.base = new PIXI.BaseTexture(base_image);
-    };
+cast.games.starcast.StarcastGame.prototype.imageOnLoad = function (event) {
+    this.instantiatePuzzlePiecesAndControlButtons(192, 192, this.totalPuzzleRows, this.totalPuzzleColumns,
+        this.container_, this.loader_.resources["assets/controlButtons.json"].textures, this.diagonalControlButton_);
 };
 
 
@@ -384,12 +385,9 @@ cast.games.starcast.StarcastGame.prototype.onAssetsLoaded_ = function() {
 
   //Get Architecture images from Fingna API
   var testURL = "https://api.finna.fi/Cover/Show?id=muusa.urn%3Auuid%3A7682B120-4F8E-4210-AD4D-1B118BA7699E&index=0&size=large";
-  var base_image = new Image();
-  base_image.addEventListener("load", this.imageOnLoad(base_image));
-  base_image.src = testURL;
-
-  this.instantiatePuzzlePiecesAndControlButtons(192, 192, this.totalPuzzleRows, this.totalPuzzleColumns,
-  this.container_, this.loader_.resources["assets/controlButtons.json"].textures, this.diagonalControlButton_);
+  this.apiImage_ = new Image();
+  this.apiImage_.addEventListener("load", this.imageOnLoad.bind(this));
+  this.apiImage_.src = testURL;
 
   for (var i = 0; i < this.MAX_PLAYERS_; i++) {
     var player = PIXI.Sprite.fromImage('assets/player.png');
