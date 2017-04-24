@@ -69,7 +69,17 @@ cast.games.starcast.StarcastGame = function(gameManager) {
   /** Count flip for the suggestion */
   this.suggestedFlipCount_ = 0;
 
+  /** Count flip in each round, when players click rows and columns */
+  this.playerEachFlipCount_ = 0;
+
+  /** Count total flips from players */
   this.playerTotalFlipCount_ = 0;
+
+  /** Given points in the beginning of the each puzzle round */
+  this.givenPoints_ = 100;
+
+  /** Count final points in each puzzle round */
+  this.finalPoints_ = 0;
 
   /** @private {!Uint32Array} Used for loop iterators in #update */
   this.loopIterator_ = new Uint32Array(2);
@@ -553,17 +563,20 @@ cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ = function(player, r
 
 cast.games.starcast.StarcastGame.prototype.flipPieces = function(playerSprite, rowOrCol, numRowOrCol) {
   if (rowOrCol == "ROW") {
-      this.playerTotalFlipCount_++;
+      this.playerEachFlipCount_++;
+      this.givenPoints_ -=1;
       for (var i = 0; i < this.pieces_.length; i++) {
         flipPieceTween(this.pieces_[numRowOrCol][i]);
       }
     } else if (rowOrCol == "COL") {
-      this.playerTotalFlipCount_++;
+      this.playerEachFlipCount_++;
+      this.givenPoints_ -=1;
       for (i = 0; i < this.pieces_.length; i++) {
         flipPieceTween(this.pieces_[i][numRowOrCol]);
       }
     } else if (rowOrCol == "DIAGONAL") {
-      this.playerTotalFlipCount_++;
+      this.playerEachFlipCount_++;
+      this.givenPoints_ -=1;
       for (i = 0; i < this.pieces_.length; i++) {
         flipPieceTween(this.pieces_[this.pieces_.length - i - 1][i]);
       }
@@ -571,21 +584,33 @@ cast.games.starcast.StarcastGame.prototype.flipPieces = function(playerSprite, r
         throw Error('Only Row, COL, DIAGONAL are allowed but received ' + rowOrCol);
     }
 
-    //Display the actual number of flips from a player on the scrren
-    this.displayCountflipsFromPlayerMessage();
-
+    this.checkFlipsFromPlayerMessage();
     if (this.checkPuzzleIsSolved()){
       this.displayCongratMessage();
+      //this.calculatePlayerPointsInEachRound(this.playerEachFlipCount_);
+      //Display the actual number of flips from a player on the screen
+      this.displayCountflipsFromPlayerMessage();
       this.backgroundSprite_.visible = false;
     }
 };
 
-cast.games.starcast.StarcastGame.prototype.displayCountflipsFromPlayerMessage = function () {
+cast.games.starcast.StarcastGame.prototype.checkFlipsFromPlayerMessage = function () {
     var message = new PIXI.Text(
-        "The Player flips : " + this.playerTotalFlipCount_ + " times",
+        "The Player each flips : " + this.playerEachFlipCount_ + " times\n" +
+        "The Player final flips : " + this.givenPoints_ + " times",
         {fontFamily: "Arial", fontSize: 30, fill: "green"}
     );
     message.position.set( this.canvasWidth_ / 4, this.canvasHeight_ / 2 - 100);
+    this.container_.addChild(message);
+};
+
+cast.games.starcast.StarcastGame.prototype.displayCountflipsFromPlayerMessage = function () {
+    var message = new PIXI.Text(
+        "The Player total flips : " + this.playerEachFlipCount_ + " times\n" +
+        "The Player final points : " + this.givenPoints_ + " points",
+        {fontFamily: "Arial", fontSize: 30, fill: "yellow"}
+    );
+    message.position.set( this.canvasWidth_ / 4, this.canvasHeight_ / 2 - 50);
     this.container_.addChild(message);
 };
 
