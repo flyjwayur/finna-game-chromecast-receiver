@@ -590,17 +590,21 @@ cast.games.starcast.StarcastGame.prototype.flipPieces = function(playerSprite, r
     this.checkFlipsFromPlayerMessage();
     if (this.checkPuzzleIsSolved()){
       this.displayCongratMessage();
+      this.scoreSystem();
       //this.calculatePlayerPointsInEachRound(this.playerEachFlipCount_);
       //Display the actual number of flips from a player on the screen
-      if(this.playerEachFlipCount_ == this.suggestedFlipCount_){
-        this.finalPoints_ = + 10;
+      this.backgroundSprite_.visible = false;
+    }
+};
+
+
+cast.games.starcast.StarcastGame.prototype.scoreSystem = function(){
+    if(this.playerEachFlipCount_ == this.suggestedFlipCount_){
+        this.finalPoints_ += 10;
         this.displayCountflipsFromPlayerMessage();
-      }else if(this.playerEachFlipCount_ > this.suggestedFlipCount_){
+    }else if(this.playerEachFlipCount_ > this.suggestedFlipCount_){
         this.finalPoints_ = this.givenPoints_ - (this.playerEachFlipCount_ > this.suggestedFlipCount_);
         this.displayCountflipsFromPlayerMessage();
-      }
-
-      this.backgroundSprite_.visible = false;
     }
 };
 
@@ -636,7 +640,6 @@ cast.games.starcast.StarcastGame.prototype.checkPuzzleIsSolved = function() {
   return true;
 };
 
-
 /*
  *
  * Display ideally how many times user can flip to solve the puzzle as a hint
@@ -652,7 +655,6 @@ cast.games.starcast.StarcastGame.prototype.displayFlipSuggestionMessage = functi
     message.position.set( this.canvasWidth_ / 4, this.canvasHeight_ / 2);
     this.container_.addChild(message);
 };
-
 
 cast.games.starcast.StarcastGame.prototype.displayCongratMessage = function () {
   var message = new PIXI.Text(
