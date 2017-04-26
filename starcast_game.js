@@ -75,9 +75,6 @@ cast.games.starcast.StarcastGame = function(gameManager) {
   /** Count flip in each round, when players click rows and columns */
   this.playerEachFlipCount_ = 0;
 
-  /** Count total flips from players */
-  this.playerTotalFlipCount_ = 0;
-
   /** Given points in the beginning of the each puzzle round */
   this.givenPoints_ = 100;
 
@@ -568,21 +565,18 @@ cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ = function(player, r
 
 cast.games.starcast.StarcastGame.prototype.flipPieces = function(playerSprite, rowOrCol, numRowOrCol) {
   if (rowOrCol == "ROW") {
-      this.playerEachFlipCount_++;
       // this.givenPoints_ -=1;
       // this.finalPoints_ = this.givenPoints_;
       for (var i = 0; i < this.pieces_.length; i++) {
         flipPieceTween(this.pieces_[numRowOrCol][i]);
       }
     } else if (rowOrCol == "COL") {
-      this.playerEachFlipCount_++;
       // this.givenPoints_ -=1;
       // this.finalPoints_ = this.givenPoints_;
       for (i = 0; i < this.pieces_.length; i++) {
         flipPieceTween(this.pieces_[i][numRowOrCol]);
       }
     } else if (rowOrCol == "DIAGONAL") {
-      this.playerEachFlipCount_++;
       // this.givenPoints_ -=1;
       // this.finalPoints_ = this.givenPoints_;
       for (i = 0; i < this.pieces_.length; i++) {
@@ -592,7 +586,10 @@ cast.games.starcast.StarcastGame.prototype.flipPieces = function(playerSprite, r
         throw Error('Only Row, COL, DIAGONAL are allowed but received ' + rowOrCol);
     }
 
-    this.checkFlipsFromPlayerMessage();
+  // call here once because it is called once in any case
+  this.playerEachFlipCount_++;
+
+  this.checkFlipsFromPlayerMessage();
     if (this.checkPuzzleIsSolved()){
       this.displayCongratMessage();
       this.scoreSystem();
