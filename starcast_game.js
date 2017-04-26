@@ -312,6 +312,7 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
     this.suggestedFlipCount_++;
   }
 
+  this.checkFlipsFromPlayerMessage();
   this.displayFlipSuggestionMessage();
 };
 
