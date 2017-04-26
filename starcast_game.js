@@ -42,17 +42,12 @@ cast.games.starcast.StarcastGame = function (gameManager) {
   this.canvasHeight_ = window.innerHeight;
 
   /** @private {number} */
-  this.DISPLAY_BORDER_BUFFER_WIDTH_ = window.innerWidth / 2;
-
   this.puzzleWidth_ = 384;
 
   this.puzzleHeight_ = 384;
 
   /** @private {number} */
   this.MAX_PLAYERS_ = 4;
-
-  /** @private {string} */
-  this.MESSAGES_ERROR_ = 'Error message: ';
 
   /** @private {!Array.<!PIXI.Sprite>} All player sprites. */
   this.players_ = [];
@@ -71,6 +66,8 @@ cast.games.starcast.StarcastGame = function (gameManager) {
 
   /** Count flip for the suggestion */
   this.suggestedFlipCount_ = 0;
+
+  this.extraFlipsThanNecessary_ = 10;
 
   /** Count flip in each round, when players click rows and columns */
   this.playerEachFlipCount_ = 0;
@@ -589,7 +586,8 @@ cast.games.starcast.StarcastGame.prototype.scoreSystem = function () {
 
 cast.games.starcast.StarcastGame.prototype.checkFlipsFromPlayerMessage = function () {
   var hudText_ = "The Player each flips : " + this.playerEachFlipCount_ + " times\n" +
-    "The Player final points from givenPoints : " + ( 10 * (this.suggestedFlipCount_ - this.playerEachFlipCount_)) + " points\n";
+    "The Player final points from givenPoints : " +
+    ( 10 * (this.suggestedFlipCount_ + this.extraFlipsThanNecessary_ - this.playerEachFlipCount_)) + " points\n";
   // heads up display messages
   if (this.hud_ == null) {
     this.hud_ = new PIXI.Text(
