@@ -75,12 +75,6 @@ cast.games.starcast.StarcastGame = function (gameManager) {
   /** Count flip in each round, when players click rows and columns */
   this.playerEachFlipCount_ = 0;
 
-  /** Given points in the beginning of the each puzzle round */
-  this.givenPoints_ = 100;
-
-  /** Count final points in each puzzle round */
-  this.finalPoints_ = 0;
-
   /** @private {PIXI.Sprite} The background. */
   this.backgroundSprite_ = null;
 
@@ -587,18 +581,15 @@ cast.games.starcast.StarcastGame.prototype.flipPieces = function (playerSprite, 
 
 cast.games.starcast.StarcastGame.prototype.scoreSystem = function () {
   if (this.playerEachFlipCount_ == this.suggestedFlipCount_) {
-    this.finalPoints_ += 10;
     this.displayCountflipsFromPlayerMessage();
   } else if (this.playerEachFlipCount_ > this.suggestedFlipCount_) {
-    this.finalPoints_ = this.givenPoints_ - (this.playerEachFlipCount_ > this.suggestedFlipCount_);
     this.displayCountflipsFromPlayerMessage();
   }
 };
 
 cast.games.starcast.StarcastGame.prototype.checkFlipsFromPlayerMessage = function () {
   var hudText_ = "The Player each flips : " + this.playerEachFlipCount_ + " times\n" +
-    "The Player final points from givenPoints : " + this.givenPoints_ + " points\n" +
-    "The Player final points : " + this.finalPoints_ + " points";
+    "The Player final points from givenPoints : " + ( 10 * (this.suggestedFlipCount_ - this.playerEachFlipCount_)) + " points\n";
   // heads up display messages
   if (this.hud_ == null) {
     this.hud_ = new PIXI.Text(
@@ -615,8 +606,7 @@ cast.games.starcast.StarcastGame.prototype.checkFlipsFromPlayerMessage = functio
 cast.games.starcast.StarcastGame.prototype.displayCountflipsFromPlayerMessage = function () {
   var message = new PIXI.Text(
     "The Player each flips : " + this.playerEachFlipCount_ + " times\n" +
-    "The Player final points from givenPoints : " + this.givenPoints_ + " points\n" +
-    "The Player final points : " + this.finalPoints_ + " points",
+    "The Player final points from givenPoints : " + ( 10 * (this.suggestedFlipCount_ - this.playerEachFlipCount_)) + " points\n",
     {fontFamily: "Arial", fontSize: 30, fill: "yellow"}
   );
   message.position.set(this.canvasWidth_ / 4, this.canvasHeight_ / 2 - 130);
