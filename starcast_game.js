@@ -44,12 +44,15 @@ cast.games.starcast.StarcastGame = function(gameManager) {
   /** @private {number} */
   this.DISPLAY_BORDER_BUFFER_WIDTH_ = window.innerWidth / 2;
 
+  this.puzzleWidth_ = 384;
+
+  this.puzzleHeight_ = 384;
+
   /** @private {number} */
   this.MAX_PLAYERS_ = 4;
 
   /** @private {string} */
-  this.MESSAGES_ERROR_ =
-      'Error message: ';
+  this.MESSAGES_ERROR_ = 'Error message: ';
 
   /** @private {!Array.<!PIXI.Sprite>} All player sprites. */
   this.players_ = [];
@@ -316,20 +319,20 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
 function createLeftSideButtons(buttonsArray, row, totalRow, totalCol, pieceWidth, pieceHeight, container) {
   var button = buttonsArray[row % buttonsArray.length];
   // set a button at top left of the puzzles
-  button.position.x = container.width / 2 - pieceWidth / 2 - (pieceWidth * (totalCol + 1.6));
-  button.position.y = container.height / 2 - pieceHeight / 2 - (pieceHeight * (totalRow - 0.2));
+  button.position.x = container.width / 2 - pieceWidth / 2 - (pieceWidth * (totalCol + 1.6) / 2);
+  button.position.y = container.height / 2 - pieceHeight / 2 - (pieceHeight * (totalRow - 0.2) / 2);
   // set button's proper y
-  button.position.y = button.position.y + (pieceHeight * row * 2);
+  button.position.y = button.position.y + (pieceHeight * row);
   container.addChild(button);
 }
 
 function createBottomSideButtons(buttonsArray, col, totalRow, totalCol, pieceWidth, pieceHeight, container) {
   var button = buttonsArray[col % buttonsArray.length];
   // set a button at top left of the puzzles
-  button.position.x = container.width / 2 - pieceWidth / 2 - (pieceWidth * (totalCol - 0.2));
-  button.position.y = container.height / 2 - pieceHeight / 2 + (pieceHeight * (totalRow + 0.1));
+  button.position.x = container.width / 2 - pieceWidth / 2 - (pieceWidth * (totalCol - 0.2) / 2);
+  button.position.y = container.height / 2 - pieceHeight / 2 + (pieceHeight * (totalRow + 0.1) / 2);
   // set button's proper y
-  button.position.x = button.position.x + (pieceHeight * col * 2);
+  button.position.x = button.position.x + (pieceHeight * col);
   container.addChild(button);
 }
 
@@ -342,21 +345,21 @@ cast.games.starcast.StarcastGame.prototype.createSpriteFromSpriteSheet = functio
       texture = new PIXI.Texture(base);
   texture.frame = rectangle;
   var piece = new PIXI.Sprite(texture);
-  piece.width = 16;
-  piece.height = 16;
+  piece.width = width;
+  piece.height = height;
 
   // Center all pieces
-  piece.x = container.width / 2 - piece.width / 2 - (width * totalCol);
-  piece.y = container.height / 2 - piece.height / 2 - (height * totalRow);
+  piece.x = container.width / 2 - piece.width / 2 - (width * totalCol / 2);
+  piece.y = container.height / 2 - piece.height / 2 - (height * totalRow / 2);
 
   // Scale all pieces
-  piece.scale.x = 2;
-  piece.scale.y = 2;
+  piece.scale.x = 1;
+  piece.scale.y = 1;
 
   // Spread pieces evenly
   // Widen the space between pieces after scaling the pieces
-  piece.x = piece.x + (width * col * 2);
-  piece.y = piece.y + (height * row * 2);
+  piece.x = piece.x + (width * col);
+  piece.y = piece.y + (height * row);
 
   // boolean flag for solution checking
   piece.flipped = false;
@@ -373,9 +376,11 @@ cast.games.starcast.StarcastGame.prototype.createSpriteFromSpriteSheet = functio
  *
  **/
 
-
 cast.games.starcast.StarcastGame.prototype.imageOnLoad = function (event) {
-    this.instantiatePuzzlePiecesAndControlButtons(192, 192, this.totalPuzzleRows, this.totalPuzzleColumns,
+  this.apiImage_.width = this.puzzleWidth_;
+  this.apiImage_.height = this.puzzleHeight_;
+
+    this.instantiatePuzzlePiecesAndControlButtons(this.puzzleWidth_, this.puzzleHeight_, this.totalPuzzleRows, this.totalPuzzleColumns,
         this.container_, this.loader_.resources["assets/controlButtons.json"].textures, this.diagonalControlButton_);
 };
 
@@ -668,7 +673,7 @@ cast.games.starcast.StarcastGame.prototype.displayCongratMessage = function () {
 function flipPieceTween(piece) {
   piece.flipped = !piece.flipped;
   if (piece.scale.x == 0) {
-    createjs.Tween.get(piece.scale).to({ x: 2}, 500);
+    createjs.Tween.get(piece.scale).to({ x: 1}, 500);
   } else {
     createjs.Tween.get(piece.scale).to({ x: 0}, 500);
   }
@@ -677,7 +682,7 @@ function flipPieceTween(piece) {
 function flipPiece(piece) {
   piece.flipped = !piece.flipped;
   if (piece.scale.x == 0) {
-    piece.scale.x = 2;
+    piece.scale.x = 1;
   } else {
     piece.scale.x = 0;
   }
