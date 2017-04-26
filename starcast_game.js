@@ -102,6 +102,8 @@ cast.games.starcast.StarcastGame = function(gameManager) {
   /** @private {!PIXI.Container} */
   this.container_ = new PIXI.Container();
 
+  this.hud_ = null;
+
   /** @private {!PIXI.WebGLRenderer} */
   this.renderer_ = new PIXI.WebGLRenderer(this.canvasWidth_,
       this.canvasHeight_);
@@ -611,14 +613,20 @@ cast.games.starcast.StarcastGame.prototype.scoreSystem = function(){
 };
 
 cast.games.starcast.StarcastGame.prototype.checkFlipsFromPlayerMessage = function () {
-    var message = new PIXI.Text(
-        "The Player each flips : " + this.playerEachFlipCount_ + " times\n" +
-        "The Player final points from givenPoints : " + this.givenPoints_ + " points\n"+
-        "The Player final points : " + this.finalPoints_ + " points",
-        {fontFamily: "Arial", fontSize: 30, fill: "green"}
+  var hudText_ = "The Player each flips : " + this.playerEachFlipCount_ + " times\n" +
+    "The Player final points from givenPoints : " + this.givenPoints_ + " points\n"+
+    "The Player final points : " + this.finalPoints_ + " points";
+  // heads up display messages
+  if (this.hud_ == null) {
+    this.hud_ = new PIXI.Text(
+      hudText_,
+      {fontFamily: "Arial", fontSize: 30, fill: "yellow"}
     );
-    message.position.set( this.canvasWidth_ / 4, this.canvasHeight_ / 2 - 100);
-    this.container_.addChild(message);
+  } else {
+    this.hud_.text = hudText_;
+  }
+  this.hud_.position.set( this.canvasWidth_ / 4, this.canvasHeight_ / 2 - 130);
+  this.container_.addChild(this.hud_);
 };
 
 cast.games.starcast.StarcastGame.prototype.displayCountflipsFromPlayerMessage = function () {
