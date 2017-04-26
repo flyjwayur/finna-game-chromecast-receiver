@@ -594,12 +594,12 @@ cast.games.starcast.StarcastGame.prototype.checkFlipsFromPlayerMessage = functio
   if (this.hud_ == null) {
     this.hud_ = new PIXI.Text(
       hudText_,
-      {fontFamily: "Arial", fontSize: 30, fill: "yellow"}
+      {fontFamily: "Arial", fontSize: 25, fill: "yellow"}
     );
   } else {
     this.hud_.text = hudText_;
   }
-  this.hud_.position.set(this.canvasWidth_ / 4, this.canvasHeight_ / 2 - 130);
+  this.hud_.position.set(this.canvasWidth_ / 4, this.canvasHeight_ / 25);
   this.container_.addChild(this.hud_);
 };
 
@@ -607,9 +607,9 @@ cast.games.starcast.StarcastGame.prototype.displayCountflipsFromPlayerMessage = 
   var message = new PIXI.Text(
     "The Player each flips : " + this.playerEachFlipCount_ + " times\n" +
     "The Player final points from givenPoints : " + ( 10 * (this.suggestedFlipCount_ - this.playerEachFlipCount_)) + " points\n",
-    {fontFamily: "Arial", fontSize: 30, fill: "yellow"}
+    {fontFamily: "Arial", fontSize: 20, fill: "yellow"}
   );
-  message.position.set(this.canvasWidth_ / 4, this.canvasHeight_ / 2 - 130);
+  message.position.set(this.canvasWidth_ / 4, this.canvasHeight_ / 25);
   this.container_.addChild(message);
 };
 
@@ -633,9 +633,9 @@ cast.games.starcast.StarcastGame.prototype.displayFlipSuggestionMessage = functi
   var message = new PIXI.Text(
     "If you can find the solution with a less flip, there will be more points\n" +
     "Hint! Try to flip as few as these flips :D :" + this.suggestedFlipCount_,
-    {fontFamily: "Arial", fontSize: 30, fill: "yellow"}
+    {fontFamily: "Arial", fontSize: 25, fill: "yellow"}
   );
-  message.position.set(this.canvasWidth_ / 4, this.canvasHeight_ / 2);
+  message.position.set(this.canvasWidth_ / 4, this.canvasHeight_ * 85 / 100);
   this.container_.addChild(message);
 };
 
