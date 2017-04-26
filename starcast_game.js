@@ -81,14 +81,8 @@ cast.games.starcast.StarcastGame = function (gameManager) {
   /** Count final points in each puzzle round */
   this.finalPoints_ = 0;
 
-  /** @private {!Uint32Array} Used for loop iterators in #update */
-  this.loopIterator_ = new Uint32Array(2);
-
   /** @private {PIXI.Sprite} The background. */
   this.backgroundSprite_ = null;
-
-  /** @private {!Array.<!PIXI.extras.MovieClip>} All explosion movie clips. */
-  this.explosions_ = [];
 
   /** @private {function(number)} Pre-bound call to #update. */
   this.boundUpdateFunction_ = this.update_.bind(this);
@@ -103,10 +97,6 @@ cast.games.starcast.StarcastGame = function (gameManager) {
   this.container_ = new PIXI.Container();
 
   this.hud_ = null;
-
-  /** @private {!PIXI.WebGLRenderer} */
-  this.renderer_ = new PIXI.WebGLRenderer(this.canvasWidth_,
-    this.canvasHeight_);
 
   /** @private {!PIXI.WebGLRenderer} */
   this.canvasrenderer_ = new PIXI.CanvasRenderer(this.canvasWidth_,
@@ -436,7 +426,6 @@ cast.games.starcast.StarcastGame.prototype.update_ = function (timestamp) {
   requestAnimationFrame(this.boundUpdateFunction_);
 
   this.canvasrenderer_.render(this.container_);
-  //this.renderer_.render(this.container_);
 };
 
 /**
@@ -568,20 +557,14 @@ cast.games.starcast.StarcastGame.prototype.onPlayerMessage_ = function (player, 
 
 cast.games.starcast.StarcastGame.prototype.flipPieces = function (playerSprite, rowOrCol, numRowOrCol) {
   if (rowOrCol == "ROW") {
-    // this.givenPoints_ -=1;
-    // this.finalPoints_ = this.givenPoints_;
     for (var i = 0; i < this.pieces_.length; i++) {
       flipPieceTween(this.pieces_[numRowOrCol][i]);
     }
   } else if (rowOrCol == "COL") {
-    // this.givenPoints_ -=1;
-    // this.finalPoints_ = this.givenPoints_;
     for (i = 0; i < this.pieces_.length; i++) {
       flipPieceTween(this.pieces_[i][numRowOrCol]);
     }
   } else if (rowOrCol == "DIAGONAL") {
-    // this.givenPoints_ -=1;
-    // this.finalPoints_ = this.givenPoints_;
     for (i = 0; i < this.pieces_.length; i++) {
       flipPieceTween(this.pieces_[this.pieces_.length - i - 1][i]);
     }
@@ -596,7 +579,6 @@ cast.games.starcast.StarcastGame.prototype.flipPieces = function (playerSprite, 
   if (this.checkPuzzleIsSolved()) {
     this.displayCongratMessage();
     this.scoreSystem();
-    //this.calculatePlayerPointsInEachRound(this.playerEachFlipCount_);
     //Display the actual number of flips from a player on the screen
     this.backgroundSprite_.visible = false;
   }
@@ -692,6 +674,6 @@ function flipPiece(piece) {
   } else {
     piece.scale.x = 0;
   }
-}
+};
 
 
