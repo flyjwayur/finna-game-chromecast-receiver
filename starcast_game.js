@@ -230,8 +230,8 @@ cast.games.starcast.StarcastGame.prototype.start_ = function () {
 
 cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButtons = function (imageWidth, imageHeight, totalRow, totalCol,
                                                                                                 container, buttonTextureId, diagonalControlButton) {
-  var pieceWidth = imageWidth / totalCol,
-    pieceHeight = imageHeight / totalRow;
+  var pieceWidth = Math.floor(imageWidth / totalCol),
+      pieceHeight = Math.floor(imageHeight / totalRow);
 
   var leftSideButtonsArray = [];
   leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["greenButton.png"]));
@@ -254,7 +254,7 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
     createLeftSideButtons(leftSideButtonsArray, row, totalRow, totalCol, pieceWidth, pieceHeight, container);
     for (var col = 0; col < totalCol; col++) {
       this.pieces_[row].push(
-        this.createSpriteFromSpriteSheet(pieceWidth, pieceHeight, row, col,
+        this.createSpriteFromSpriteSheet.bind(this)(pieceWidth, pieceHeight, row, col,
           totalRow, totalCol, container)
       );
       createBottomSideButtons(bottomSideButtonsArray, col, totalRow, totalCol, pieceWidth, pieceHeight, container);
@@ -319,6 +319,7 @@ function createBottomSideButtons(buttonsArray, col, totalRow, totalCol, pieceWid
 
 cast.games.starcast.StarcastGame.prototype.createSpriteFromSpriteSheet = function (width, height, row, col,
                                                                                    totalRow, totalCol, container) {
+
   var rectangle = new PIXI.Rectangle(width * col, height * row, width, height);
   //Tell the texture to use that rectangular section
   // var texture = new PIXI.Texture(PIXI.BaseTexture.fromImage("assets/tileset.png"));
@@ -334,13 +335,20 @@ cast.games.starcast.StarcastGame.prototype.createSpriteFromSpriteSheet = functio
   piece.y = container.height / 2 - piece.height / 2 - (height * totalRow / 2);
 
   // Scale all pieces
-  piece.scale.x = 1;
-  piece.scale.y = 1;
+  // Resize the puzzle image to display the whole puzzle image
+  var imageXRatio = this.apiImage_.width / this.puzzleWidth_;
+  var imageYRatio = this.apiImage_.height / this.puzzleHeight_;
+
+  var XScaleRate = 1 / imageXRatio;
+  var YScaleRate = 1 / imageYRatio;
+
+  piece.scale.x = XScaleRate;
+  piece.scale.y = YScaleRate;
 
   // Spread pieces evenly
   // Widen the space between pieces after scaling the pieces
-  piece.x = piece.x + (width * col);
-  piece.y = piece.y + (height * row);
+  piece.x = piece.x + (width * col * XScaleRate);
+  piece.y = piece.y + (height * row * YScaleRate);
 
   // boolean flag for solution checking
   piece.flipped = false;
@@ -358,10 +366,8 @@ cast.games.starcast.StarcastGame.prototype.createSpriteFromSpriteSheet = functio
  **/
 
 cast.games.starcast.StarcastGame.prototype.imageOnLoad = function (event) {
-  this.apiImage_.width = this.puzzleWidth_;
-  this.apiImage_.height = this.puzzleHeight_;
 
-  this.instantiatePuzzlePiecesAndControlButtons(this.puzzleWidth_, this.puzzleHeight_, this.totalPuzzleRows, this.totalPuzzleColumns,
+  this.instantiatePuzzlePiecesAndControlButtons.bind(this)(this.apiImage_.width, this.apiImage_.height, this.totalPuzzleRows, this.totalPuzzleColumns,
     this.container_, this.loader_.resources["assets/controlButtons.json"].textures, this.diagonalControlButton_);
 };
 
