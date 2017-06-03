@@ -228,10 +228,15 @@ cast.games.starcast.StarcastGame.prototype.start_ = function () {
     this.boundPlayerQuitCallback_);
 };
 
-cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButtons = function (imageWidth, imageHeight, totalRow, totalCol,
-                                                                                                container, buttonTextureId, diagonalControlButton) {
-  var pieceWidth = Math.floor(imageWidth / totalCol),
-      pieceHeight = Math.floor(imageHeight / totalRow);
+cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButtons = function (totalRow, totalCol,
+                                                                                                container, buttonTextureId,
+                                                                                                diagonalControlButton) {
+
+  var buttonXDist = Math.floor(this.puzzleWidth_ / totalCol),
+      buttonYDist = Math.floor(this.puzzleHeight_ / totalRow);
+
+  var pieceWidth = Math.floor(this.apiImage_.width / totalCol),
+      pieceHeight = Math.floor(this.apiImage_.height / totalRow);
 
   var leftSideButtonsArray = [];
   leftSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["greenButton.png"]));
@@ -249,22 +254,21 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
   bottomSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["purpleButton.png"]));
   bottomSideButtonsArray.push(new PIXI.Sprite(buttonTextureId["greenButton.png"]));
 
-  for (var row = 0; row < totalRow; row++) {
+    for (var row = 0; row < totalRow; row++) {
     this.pieces_.push([]);
-    createLeftSideButtons(leftSideButtonsArray, row, totalRow, totalCol, pieceWidth, pieceHeight, container);
+    createLeftSideButtons(leftSideButtonsArray, row, totalRow, totalCol, buttonXDist, buttonYDist, container);
     for (var col = 0; col < totalCol; col++) {
       this.pieces_[row].push(
         this.createSpriteFromSpriteSheet.bind(this)(pieceWidth, pieceHeight, row, col,
           totalRow, totalCol, container)
       );
-      createBottomSideButtons(bottomSideButtonsArray, col, totalRow, totalCol, pieceWidth, pieceHeight, container);
+      createBottomSideButtons(bottomSideButtonsArray, col, totalRow, totalCol, buttonXDist, buttonYDist, container);
     }
   }
 
   //Make a position for the diagonal control button
   diagonalControlButton.position.set(leftSideButtonsArray[0].x, bottomSideButtonsArray[0].y);
   container.addChild(diagonalControlButton);
-
 
   // flip random rows
   for (row = 0; row < totalRow; row++) {
@@ -297,23 +301,23 @@ cast.games.starcast.StarcastGame.prototype.instantiatePuzzlePiecesAndControlButt
   this.displayFlipSuggestionMessage();
 };
 
-function createLeftSideButtons(buttonsArray, row, totalRow, totalCol, pieceWidth, pieceHeight, container) {
+function createLeftSideButtons(buttonsArray, row, totalRow, totalCol, buttonXdist, buttonYdist, container) {
   var button = buttonsArray[row % buttonsArray.length];
   // set a button at top left of the puzzles
-  button.position.x = container.width / 2 - pieceWidth / 2 - (pieceWidth * (totalCol + 1.6) / 2);
-  button.position.y = container.height / 2 - pieceHeight / 2 - (pieceHeight * (totalRow - 0.2) / 2);
+  button.position.x = container.width / 2 - buttonXdist / 2 - (buttonXdist * (totalCol + 1.6) / 2);
+  button.position.y = container.height / 2 - buttonYdist / 2 - (buttonYdist * (totalRow - 0.2) / 2);
   // set button's proper y
-  button.position.y = button.position.y + (pieceHeight * row);
+  button.position.y = button.position.y + (buttonYdist * row);
   container.addChild(button);
 }
 
-function createBottomSideButtons(buttonsArray, col, totalRow, totalCol, pieceWidth, pieceHeight, container) {
+function createBottomSideButtons(buttonsArray, col, totalRow, totalCol, buttonXdist, buttonYdist, container) {
   var button = buttonsArray[col % buttonsArray.length];
   // set a button at top left of the puzzles
-  button.position.x = container.width / 2 - pieceWidth / 2 - (pieceWidth * (totalCol - 0.2) / 2);
-  button.position.y = container.height / 2 - pieceHeight / 2 + (pieceHeight * (totalRow + 0.1) / 2);
+  button.position.x = container.width / 2 - buttonXdist / 2 - (buttonXdist * (totalCol - 0.2) / 2);
+  button.position.y = container.height / 2 - buttonYdist / 2 + (buttonYdist * (totalRow + 0.1) / 2);
   // set button's proper y
-  button.position.x = button.position.x + (pieceHeight * col);
+  button.position.x = button.position.x + (buttonYdist * col);
   container.addChild(button);
 }
 
@@ -367,7 +371,7 @@ cast.games.starcast.StarcastGame.prototype.createSpriteFromSpriteSheet = functio
 
 cast.games.starcast.StarcastGame.prototype.imageOnLoad = function (event) {
 
-  this.instantiatePuzzlePiecesAndControlButtons.bind(this)(this.apiImage_.width, this.apiImage_.height, this.totalPuzzleRows, this.totalPuzzleColumns,
+  this.instantiatePuzzlePiecesAndControlButtons.bind(this)(this.totalPuzzleRows, this.totalPuzzleColumns,
     this.container_, this.loader_.resources["assets/controlButtons.json"].textures, this.diagonalControlButton_);
 };
 
