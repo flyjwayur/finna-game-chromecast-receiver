@@ -332,20 +332,21 @@ cast.games.starcast.StarcastGame.prototype.createSpriteFromSpriteSheet = functio
   texture.frame = rectangle;
   var piece = new PIXI.Sprite(texture);
 
+
+    // Scale all pieces
+    // Resize the puzzle image to display the whole puzzle image
+    var imageXRatio = this.apiImage_.width / this.puzzleWidth_;
+    var imageYRatio = this.apiImage_.height / this.puzzleHeight_;
+
+    var XScaleRate = 1 / imageXRatio;
+    var YScaleRate = 1 / imageYRatio;
+
+    piece.scale.x = XScaleRate;
+    piece.scale.y = YScaleRate;
+
   // Center all pieces
-  piece.x = container.width / 2 - piece.width / 2 - (width * totalCol / 2);
-  piece.y = container.height / 2 - piece.height / 2 - (height * totalRow / 2);
-
-  // Scale all pieces
-  // Resize the puzzle image to display the whole puzzle image
-  var imageXRatio = this.apiImage_.width / this.puzzleWidth_;
-  var imageYRatio = this.apiImage_.height / this.puzzleHeight_;
-
-  var XScaleRate = 1 / imageXRatio;
-  var YScaleRate = 1 / imageYRatio;
-
-  piece.scale.x = XScaleRate;
-  piece.scale.y = YScaleRate;
+  piece.x = container.width / 2 - piece.width / 2 - (width * XScaleRate * totalCol / 2);
+  piece.y = container.height / 2 - piece.height / 2 - (height * YScaleRate *totalRow / 2);
 
   // Spread pieces evenly
   // Widen the space between pieces after scaling the pieces
