@@ -360,7 +360,7 @@ cast.games.starcast.StarcastGame.prototype.createSpriteFromSpriteSheet = functio
   container.addChild(piece);
 
   return piece;
-}
+};
 
 /**
  *
@@ -671,6 +671,6 @@ function flipPiece(piece) {
   } else {
     piece.scale.x = 0;
   }
-};
+}
 
 
