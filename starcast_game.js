@@ -331,8 +331,6 @@ cast.games.starcast.StarcastGame.prototype.createSpriteFromSpriteSheet = functio
     texture = new PIXI.Texture(base);
   texture.frame = rectangle;
   var piece = new PIXI.Sprite(texture);
-  piece.width = width;
-  piece.height = height;
 
   // Center all pieces
   piece.x = container.width / 2 - piece.width / 2 - (width * totalCol / 2);
