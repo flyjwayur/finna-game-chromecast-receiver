@@ -321,10 +321,10 @@ function createBottomSideButtons(buttonsArray, col, totalRow, totalCol, buttonXd
     container.addChild(button);
 }
 
-cast.games.starcast.StarcastGame.prototype.createSpriteFromSpriteSheet = function (width, height, row, col,
+cast.games.starcast.StarcastGame.prototype.createSpriteFromSpriteSheet = function (pieceWidth, pieceHeight, row, col,
                                                                                    totalRow, totalCol, container) {
 
-    var rectangle = new PIXI.Rectangle(width * col, height * row, width, height);
+    var rectangle = new PIXI.Rectangle(pieceWidth * col, pieceHeight * row, pieceWidth, pieceHeight);
     //Tell the texture to use that rectangular section
     // var texture = new PIXI.Texture(PIXI.BaseTexture.fromImage("assets/tileset.png"));
     var base = new PIXI.BaseTexture(this.apiImage_),
@@ -345,13 +345,13 @@ cast.games.starcast.StarcastGame.prototype.createSpriteFromSpriteSheet = functio
     piece.scale.y = YScaleRate;
 
     // Center all pieces
-    piece.x = container.width / 2 - piece.width / 2 - (width * XScaleRate * totalCol / 2);
-    piece.y = container.height / 2 - piece.height / 2 - (height * YScaleRate * totalRow / 2);
+    piece.x = container.width / 2 - piece.width / 2 - (piece.width * totalCol / 2);
+    piece.y = container.height / 2 - piece.height / 2 - (piece.height * totalRow / 2);
 
     // Spread pieces evenly
     // Widen the space between pieces after scaling the pieces
-    piece.x = piece.x + (width * col * XScaleRate);
-    piece.y = piece.y + (height * row * YScaleRate);
+    piece.x = piece.x + (piece.width * col);
+    piece.y = piece.y + (piece.height * row);
 
     // boolean flag for solution checking
     piece.flipped = false;
