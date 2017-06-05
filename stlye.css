@@ -1,0 +1,8 @@
+body {
+    margin: 0px;
+    overflow: hidden;
+}
+
+#rankingPoints{
+    background-color: yellow;
+}

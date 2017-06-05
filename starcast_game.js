@@ -46,6 +46,9 @@ cast.games.starcast.StarcastGame = function (gameManager) {
 
     this.puzzleHeight_ = 384;
 
+    /** @private message board**/
+    this.congrats_msg = null;
+
     /** @private {number} */
     this.MAX_PLAYERS_ = 4;
 
@@ -125,6 +128,13 @@ cast.games.starcast.StarcastGame = function (gameManager) {
     this.boundPlayerQuitCallback_ = this.onPlayerQuit_.bind(this);
 };
 
+cast.games.starcast.StarcastGame.prototype.init = function(){
+    this.congrats_msg = $("rankingPoints");
+}
+
+cast.gaems.starcast.StarcastGame.prototype.initEvent = function(){
+    this.congrats_msg.on("click", this.displayCongratMessage());
+}
 
 /**
  * JSON message field used to move.
@@ -578,7 +588,7 @@ cast.games.starcast.StarcastGame.prototype.flipPieces = function (playerSprite, 
     this.checkFlipsFromPlayerMessage();
     if (this.checkPuzzleIsSolved()) {
         this.displayCongratMessage();
-        this.scoreSystem();
+        this.scoreSystem()
         //Display the actual number of flips from a player on the screen
         this.backgroundSprite_.visible = false;
     }
@@ -648,7 +658,7 @@ cast.games.starcast.StarcastGame.prototype.displayFlipSuggestionMessage = functi
 
 cast.games.starcast.StarcastGame.prototype.displayCongratMessage = function () {
     var message = new PIXI.Text(
-        "Congratulation!!",
+        "Wonderful!!",
         {fontFamily: "Arial", fontSize: 100, fill: "white"}
     );
     message.position.set(this.canvasWidth_ / 4, this.canvasHeight_ / 2);

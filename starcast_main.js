@@ -37,6 +37,9 @@ var initialize = function() {
   var gameManager = new cast.receiver.games.GameManager(gameConfig);
   /** @suppress {missingRequire} */
   game = new cast.games.starcast.StarcastGame(gameManager);
+  // Initialize the elements and register events
+  game.init();
+  game.initEvent();
 
   var startGame = function() {
     game.run(function() {
