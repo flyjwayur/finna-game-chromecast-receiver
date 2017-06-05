@@ -39,7 +39,7 @@ cast.games.starcast.StarcastGame = function (gameManager) {
     this.canvasWidth_ = window.innerWidth;
 
     /** @private {number} */
-    this.canvasHeight_ = window.innerHeight * 0.5;
+    this.canvasHeight_ = window.innerHeight * 0.01;
 
     /** @private {number} */
     this.puzzleWidth_ = 384;
