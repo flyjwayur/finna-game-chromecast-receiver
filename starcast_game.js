@@ -132,7 +132,7 @@ cast.games.starcast.StarcastGame.prototype.init = function(){
     this.congrats_msg = $("#rankingPoints");
 }
 
-cast.gaems.starcast.StarcastGame.prototype.initEvent = function(){
+cast.games.starcast.StarcastGame.prototype.initEvent = function(){
     this.congrats_msg.on("click", this.displayCongratMessage());
 }
 
