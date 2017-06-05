@@ -42,6 +42,8 @@ var initialize = function() {
     game.run(function() {
       console.log('Game running.');
       gameManager.updateGameStatusText('Game running.');
+        game.init();
+        game.initEvent();
     });
   };
 
