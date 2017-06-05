@@ -181,7 +181,7 @@ cast.games.starcast.StarcastGame.prototype.stop = function () {
 
     this.isRunning_ = false;
     //document.body.removeChild(this.renderer_.view);
-    document.getElementById("game").removeChild(this.canvasrenderer_.view);
+    // document.getElementById("game").removeChild(this.canvasrenderer_.view);
 
     this.gameManager_.removeEventListener(
         cast.receiver.games.EventType.GAME_MESSAGE_RECEIVED,
@@ -208,7 +208,7 @@ cast.games.starcast.StarcastGame.prototype.start_ = function () {
         return;
     }
 
-    document.getElementById("game").appendChild(this.canvasrenderer_.view);
+    // document.getElementById("game").appendChild(this.canvasrenderer_.view);
     //document.body.appendChild(this.renderer_.view);
     this.isRunning_ = true;
     this.gameManager_.updateGameplayState(
