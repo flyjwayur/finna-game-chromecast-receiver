@@ -130,6 +130,7 @@ cast.games.starcast.StarcastGame = function (gameManager) {
 
 cast.games.starcast.StarcastGame.prototype.init = function(){
     this.congrats_msg = $("#rankingPoints");
+    this.congrats_msg.html("lalala");
 }
 
 cast.games.starcast.StarcastGame.prototype.initEvent = function(){
